@@ -1,8 +1,6 @@
 package com.example.gg2020
 
 import android.os.Bundle
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.snackbar.Snackbar
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
@@ -12,7 +10,7 @@ import androidx.drawerlayout.widget.DrawerLayout
 import com.google.android.material.navigation.NavigationView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import android.view.Menu
+import android.view.View
 
 class MainActivity : AppCompatActivity() {
 
@@ -38,6 +36,19 @@ class MainActivity : AppCompatActivity() {
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+
+        fun loginBtnNavHeaderClicked(view: View){
+
+        }
+
+        fun addChannelBtnClicked (view: View){
+
+        }
+
+        fun sendMsgBtnClicked (view: View){
+
+        }
+
     }
 
 
