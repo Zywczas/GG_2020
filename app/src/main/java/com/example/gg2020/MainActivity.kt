@@ -1,5 +1,6 @@
 package com.example.gg2020
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -11,6 +12,7 @@ import com.google.android.material.navigation.NavigationView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import android.view.View
+import com.example.gg2020.ui.LoginActivity
 
 class MainActivity : AppCompatActivity() {
 
@@ -37,17 +39,18 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
-        fun loginBtnNavHeaderClicked(view: View){
+    }
 
-        }
+    fun loginBtnNavHeaderClicked(view: View){
+        val loginIntent = Intent(this, LoginActivity::class.java)
+        startActivity(loginIntent)
+    }
 
-        fun addChannelBtnClicked (view: View){
+    fun addChannelBtnClicked (view: View){
 
-        }
+    }
 
-        fun sendMsgBtnClicked (view: View){
-
-        }
+    fun sendMsgBtnClicked (view: View){
 
     }
 
