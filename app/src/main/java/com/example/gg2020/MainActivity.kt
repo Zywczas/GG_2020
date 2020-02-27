@@ -12,7 +12,6 @@ import com.google.android.material.navigation.NavigationView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import android.view.View
-import com.example.gg2020.ui.LoginActivity
 
 class MainActivity : AppCompatActivity() {
 
@@ -42,8 +41,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun loginBtnNavHeaderClicked(view: View){
-        val loginIntent = Intent(this, LoginActivity::class.java)
-        startActivity(loginIntent)
+        val loginActivityIntent = Intent(this, LoginActivity::class.java)
+        startActivity(loginActivityIntent)
     }
 
     fun addChannelBtnClicked (view: View){

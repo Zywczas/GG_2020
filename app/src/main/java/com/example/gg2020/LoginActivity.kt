@@ -1,5 +1,6 @@
-package com.example.gg2020.ui
+package com.example.gg2020
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.method.HideReturnsTransformationMethod
@@ -32,6 +33,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     fun loginCreateUserBtnClicked (view: View){
-
+        val createUserActivityIntent = Intent(this, CreateUserActivity::class.java)
+        startActivity(createUserActivityIntent)
     }
 }
