@@ -1,4 +1,4 @@
-package com.example.gg2020
+package com.example.gg2020.Controller
 
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
 import android.view.View
+import com.example.gg2020.R
 import kotlinx.android.synthetic.main.activity_create_user.*
 import java.util.*
 

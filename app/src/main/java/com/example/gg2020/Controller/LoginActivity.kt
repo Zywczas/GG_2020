@@ -1,4 +1,4 @@
-package com.example.gg2020
+package com.example.gg2020.Controller
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
