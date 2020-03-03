@@ -7,6 +7,7 @@ import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
 import android.view.View
 import com.example.gg2020.R
+import com.example.gg2020.Services.AuthService
 import kotlinx.android.synthetic.main.activity_create_user.*
 import java.util.*
 
@@ -60,6 +61,23 @@ class CreateUserActivity : AppCompatActivity() {
     }
 
     fun createUserClicked (view: View) {
+        val userName = createUserNameText.text.toString()
+        val userEmail = createEmailText.text.toString()                                      //musi byc toString bo inaczej daloby characters (CharSequence)
+        val userPassword = createPasswordText.text.toString()
+        AuthService.registerUser(this, userEmail, userPassword){registerSuccess ->                 //definicja funkcji bierze lambde stad i daje przypisuje jej paramert Boolean a pozniej ja wykonuje
+            if (registerSuccess){
+                AuthService.loginUser(this, userEmail, userPassword){loginSuccess ->
+                    if (loginSuccess){
+                        println(AuthService.authToken)
+                        println(AuthService.userEmail)
+                    } else {
 
+                    }
+                }
+
+            } else {
+
+            }
+        }
     }
 }
