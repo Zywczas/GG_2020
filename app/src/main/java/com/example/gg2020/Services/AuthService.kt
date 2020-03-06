@@ -87,7 +87,20 @@ object AuthService {
         jsonBody.put("avatarColor", avatarColor)
         val requestBody = jsonBody.toString()
 
-        val createRequest = object : JsonObjectRequest (Method.POST, URL_CREATE_USER, null, Response.Listener { responce ->
+        val createUserRequest = object : JsonObjectRequest (Method.POST, URL_CREATE_USER, null, Response.Listener { response ->
+
+            try {                                                                                   //pobieranie danych ze zwroconego obiektu JSON
+                UserDataService.name = response.getString("name")
+                UserDataService.email = response.getString("email")
+                UserDataService.avatarColor = response.getString("avatarColor")
+                UserDataService.avatarName = response.getString("avatarName")
+                UserDataService.id = response.getString("_id")
+                complete(true)
+
+            } catch (e: JSONException){
+                Log.d("JSON", "EXC: ${e.localizedMessage}")
+                complete(false)
+            }
 
         }, Response.ErrorListener { error ->
             Log.d("ERROR", "cannot add user: $error")
@@ -103,10 +116,11 @@ object AuthService {
 
             override fun getHeaders(): MutableMap<String, String> {                                 //ta funkcja wysyla header do API w postaci Mapy<Key, Value>
                 val headers = HashMap<String, String>()
-                headers.put("Authorization", "Bearer $authToken")                                   //nazewnictwo z header danej (naszej) API
+                headers.put("Authorization", "Bearer $authToken")                                   //nazewnictwo z header'a naszej API
                 return headers
             }
         }
+        Volley.newRequestQueue(context).add(createUserRequest)
     }
 
 
