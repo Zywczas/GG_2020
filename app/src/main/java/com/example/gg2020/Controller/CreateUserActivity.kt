@@ -1,14 +1,18 @@
 package com.example.gg2020.Controller
 
+import android.content.Intent
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
 import android.view.View
+import android.widget.Toast
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.example.gg2020.R
 import com.example.gg2020.Services.AuthService
 import com.example.gg2020.Services.UserDataService
+import com.example.gg2020.Utilities.BROADCAST_USER_DATA_CHANGE
 import kotlinx.android.synthetic.main.activity_create_user.*
 import java.util.*
 
@@ -20,6 +24,8 @@ class CreateUserActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_user)
+
+        createSpinner.visibility = View.INVISIBLE                                                   //ustawia widocznosc danego View
 
         showHideBtn.setOnClickListener{
             if (showHideBtn.text.toString().equals("Show")){
@@ -62,25 +68,55 @@ class CreateUserActivity : AppCompatActivity() {
     }
 
     fun createUserClicked (view: View) {
+        enableSpinner(true)                                                                  //funkcja zdefiniowana ponizej
         val userName = createUserNameText.text.toString()
         val userEmail = createEmailText.text.toString()                                      //musi byc toString bo inaczej daloby characters (CharSequence)
         val userPassword = createPasswordText.text.toString()
 
-        AuthService.registerUser(this, userEmail, userPassword){registerSuccess ->          //definicja funkcji bierze lambde stad i daje przypisuje jej paramert Boolean a pozniej ja wykonuje
-            if (registerSuccess){
-                AuthService.loginUser(this, userEmail, userPassword){loginSuccess ->
-                    if (loginSuccess){
-                        AuthService.createUser(this, userName, userEmail, userAvatar, avatarBackgroundColor){createUserSuccess ->
-                            if (createUserSuccess){
-                                println(UserDataService.name)
-                                println(UserDataService.avatarColor)
-                                println(UserDataService.avatarColor)
-                                finish()                                                            //wylacza ta activity i wraca do poprzedniej
+        if (userName.isEmpty() || userEmail.isEmpty() || userPassword.isEmpty()) {
+            Toast.makeText(this,"Make sure username, email and password are filled in.",Toast.LENGTH_LONG).show()
+            enableSpinner(false)
+            return
+        }
+
+
+            AuthService.registerUser(this, userEmail, userPassword){registerSuccess ->          //definicja funkcji bierze lambde stad i daje przypisuje jej paramert Boolean a pozniej ja wykonuje
+                if (registerSuccess){
+                    AuthService.loginUser(this, userEmail, userPassword){loginSuccess ->
+                        if (loginSuccess){
+                            AuthService.createUser(this, userName, userEmail, userAvatar, avatarBackgroundColor){createUserSuccess ->
+                                if (createUserSuccess){
+                                    enableSpinner(false)
+                                    val userDataChange = Intent(BROADCAST_USER_DATA_CHANGE)
+                                    LocalBroadcastManager.getInstance(this).sendBroadcast(userDataChange)
+                                    finish()                                                            //wylacza ta activity i wraca do poprzedniej
+                                } else {
+                                    errorToast()
+                                }
                             }
+                        } else {
+                            errorToast()
                         }
                     }
+                } else {
+                    errorToast()
                 }
             }
+    }
+
+    fun errorToast(){
+        Toast.makeText(this, "Somethng wnt wrong. Pleas ty again.", Toast.LENGTH_LONG).show()
+        enableSpinner(false)
+    }
+
+    fun enableSpinner (enable: Boolean){                                                            //jezeli klikniemy guzik Create User to inne guziki sa wylaczone zeby,
+        if (enable){                                                                                //uzytkownik nie klikal ciagle, oraz wlacza prgress bar
+            createSpinner.visibility = View.VISIBLE
+        } else {
+            createSpinner.visibility = View.INVISIBLE
         }
+        createUserBtn.isEnabled = !enable
+        createAvatarImageView.isEnabled = !enable
+        backgroundColorBtn.isEnabled = !enable
     }
 }
