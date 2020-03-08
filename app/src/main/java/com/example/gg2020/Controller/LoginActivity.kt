@@ -6,7 +6,9 @@ import android.os.Bundle
 import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
 import android.view.View
+import android.widget.Toast
 import com.example.gg2020.R
+import com.example.gg2020.Services.AuthService
 import kotlinx.android.synthetic.main.activity_login.*
 
 class LoginActivity : AppCompatActivity() {
@@ -29,6 +31,19 @@ class LoginActivity : AppCompatActivity() {
     }
 
     fun loginLoginBtnClicked (view: View){
+        val email = loginEmailText.text.toString()
+        val password = loginPasswordText.text.toString()
+        AuthService.loginUser(this, email, password){loginSuccess ->
+            if (loginSuccess){
+                AuthService.findUserByEmail(this){findSuccess ->
+                    if (findSuccess){
+                        finish()
+                    }
+                }
+            } else {
+                Toast.makeText(this,"Incorrect email or pasword", Toast.LENGTH_SHORT)
+            }
+        }
 
     }
 

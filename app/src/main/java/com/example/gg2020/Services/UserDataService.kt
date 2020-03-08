@@ -32,7 +32,7 @@ object UserDataService {
         var g = 0
         var b = 0
 
-        val scanner = Scanner(strippedColor)                                                           //super klasa, ktora wyszukuje dany typ w zbiorze danych, np w String, ale nie moga byc inne znaki pomiedzy, tylko spacje sa akceptowalne
+        val scanner = Scanner(strippedColor)                                                        //super klasa, ktora wyszukuje dany typ w zbiorze danych, np w String, ale nie moga byc inne znaki pomiedzy, tylko spacje sa akceptowalne
         if (scanner.hasNext()){
             r = (scanner.nextDouble() * 255).toInt()
             g = (scanner.nextDouble() * 255).toInt()

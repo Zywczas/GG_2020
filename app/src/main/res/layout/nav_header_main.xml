@@ -30,7 +30,7 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         app:layout_constraintStart_toEndOf="@+id/userImageNavHeader"
         app:layout_constraintTop_toTopOf="@+id/userImageNavHeader"
-        tools:text="Example Name" />
+        tools:text="Example" />
 
     <TextView
         android:id="@+id/userEmailNavHeader"
