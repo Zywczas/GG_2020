@@ -78,8 +78,6 @@ class CreateUserActivity : AppCompatActivity() {
             enableSpinner(false)
             return
         }
-
-
             AuthService.registerUser(this, userEmail, userPassword){registerSuccess ->          //definicja funkcji bierze lambde stad i daje przypisuje jej paramert Boolean a pozniej ja wykonuje
                 if (registerSuccess){
                     AuthService.loginUser(this, userEmail, userPassword){loginSuccess ->
@@ -88,24 +86,28 @@ class CreateUserActivity : AppCompatActivity() {
                                 if (createUserSuccess){
                                     enableSpinner(false)
                                     val userDataChange = Intent(BROADCAST_USER_DATA_CHANGE)
-                                    LocalBroadcastManager.getInstance(this).sendBroadcast(userDataChange)
+                                    LocalBroadcastManager.getInstance(this).sendBroadcast(userDataChange) //wysylamy tylko info, nie wartosci
                                     finish()                                                            //wylacza ta activity i wraca do poprzedniej
                                 } else {
-                                    errorToast()
+                                    Toast.makeText(this, "create user error. Please change email and try again.", Toast.LENGTH_LONG).show()
+                                    enableSpinner(false)
                                 }
                             }
                         } else {
-                            errorToast()
+                            Toast.makeText(this, "login error. Please change email and try again.", Toast.LENGTH_LONG).show()
+                            enableSpinner(false)
                         }
                     }
                 } else {
-                    errorToast()
+                    Toast.makeText(this, "register error. Please change email and try again.", Toast.LENGTH_LONG).show()
+                    enableSpinner(false)
                 }
             }
+
     }
 
     fun errorToast(){
-        Toast.makeText(this, "Somethng wnt wrong. Pleas ty again.", Toast.LENGTH_LONG).show()
+        Toast.makeText(this, "Something went wrong. Please try again.", Toast.LENGTH_LONG).show()
         enableSpinner(false)
     }
 

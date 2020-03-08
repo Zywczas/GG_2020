@@ -35,5 +35,6 @@ class LoginActivity : AppCompatActivity() {
     fun loginCreateUserBtnClicked (view: View){
         val createUserActivityIntent = Intent(this, CreateUserActivity::class.java)
         startActivity(createUserActivityIntent)
+        finish()                                                                                    //jak klikniemy guzik Stworz Uzytkownika to LoginActivity zupelnie jest usuwane, wiec po stworzeniu nowego uzytkownika powinno sie cofnac z ekranu 3 (Create user) bezposrednio do ekranu 1 (main activity)
     }
 }
