@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.Color
 import android.os.Bundle
+import android.os.Message
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
@@ -20,12 +21,15 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.example.gg2020.Model.Channel
 import com.example.gg2020.R
 import com.example.gg2020.Services.AuthService
+import com.example.gg2020.Services.MessageService
 import com.example.gg2020.Services.UserDataService
 import com.example.gg2020.Utilities.BROADCAST_USER_DATA_CHANGE
 import com.example.gg2020.Utilities.SOCKET_URL
 import io.socket.client.IO
+import io.socket.emitter.Emitter
 import kotlinx.android.synthetic.main.nav_header_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -58,7 +62,7 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
-
+        socket.connect()
     }
 
     private val userDataChangeReceiver = object : BroadcastReceiver() {
@@ -78,7 +82,6 @@ class MainActivity : AppCompatActivity() {
         super.onResume()
         LocalBroadcastManager.getInstance(this).registerReceiver(userDataChangeReceiver, IntentFilter(  //odbieramy dane z CreateUserActivity
             BROADCAST_USER_DATA_CHANGE))
-        socket.connect()
     }
 
     override fun onDestroy() {
@@ -115,12 +118,27 @@ class MainActivity : AppCompatActivity() {
                     val channelDesc = descTextField.text.toString()
 
                     //create channel with name and description
-                    socket.emit("newChannel", channelName, channelDesc)
+                    socket.emit("newChannel", channelName, channelDesc)                       //kolejnosc wysylania parametrow jak w API - Event i dane
+                    socket.on("channelCreated", onNewChannel)                                //odbiera dane z API, jezeli Event wykryty to Emmitter Listener odbiera informacje
                 }
                 .setNegativeButton("Cancel"){ dialog, which ->
-
                 }
                 .show()
+        }
+    }
+
+    private val onNewChannel = Emitter.Listener {args ->                                            //przyjmuje z API array elementow typu ANY wiec musimy cast as String
+        runOnUiThread {                                                                             //Emmiter Listener dziala na worker Thread zeby nie blokowac calego UI naszej aplikacji wiec tutaj kazemy mu przejsc na glowny thread japo tym jak juz pobierze wyniki (args), zeby nasze UI zostalo zauktualizowane
+            val channelName = args[0] as String
+            val channelDesctription = args[1] as String
+            val channelId = args[2] as String
+
+            val newChannel = Channel(channelName, channelDesctription, channelId)                   //we create new Channel object were we store data about it
+            MessageService.channels.add(newChannel)                                                 //adding new channel to list of all channels
+            println(newChannel.name)
+            println(newChannel.description)
+            println(newChannel.id)
+
         }
     }
 
