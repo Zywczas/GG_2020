@@ -16,6 +16,9 @@ import com.google.android.material.navigation.NavigationView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import android.view.View
+import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
+import androidx.appcompat.app.AlertDialog
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.example.gg2020.R
 import com.example.gg2020.Services.AuthService
@@ -54,8 +57,7 @@ class MainActivity : AppCompatActivity() {
         LocalBroadcastManager.getInstance(this).registerReceiver(userDataChangeReceiver, IntentFilter(  //odbieramy dane z CreateUserActivity
             BROADCAST_USER_DATA_CHANGE))
 
-
-
+         hideKeyboard()
     }
 
     private val userDataChangeReceiver = object : BroadcastReceiver() {
@@ -88,7 +90,27 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun addChannelBtnClicked (view: View){
+        if (AuthService.isLoggedIn){
+            val builder = AlertDialog.Builder(this)
+            val dialogView = layoutInflater.inflate(R.layout.add_channel_dialog, null)
 
+            builder.setView(dialogView)
+                .setPositiveButton("Add"){ dialog, which ->  
+                    val nameTextField = dialogView.findViewById<EditText>(R.id.addChannelNameText) //nie mozna odwolac sie bezposrednio do pol tekstowych w DialogView wiec trzeba je wyszukac po ID
+                    val descTextField = dialogView.findViewById<EditText>(R.id.addChannelDescText)
+                    val channelName = nameTextField.text.toString()
+                    val channelDesc = descTextField.text.toString()
+
+                    //create channel with name and description
+                    hideKeyboard()
+                }
+                .setNegativeButton("Cancel"){ dialog, which ->
+
+                    hideKeyboard()
+
+                }
+                .show()
+        }
     }
 
     fun sendMsgBtnClicked (view: View){
@@ -99,5 +121,12 @@ class MainActivity : AppCompatActivity() {
     override fun onSupportNavigateUp(): Boolean {
         val navController = findNavController(R.id.nav_host_fragment)
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
+    }
+
+    fun hideKeyboard(){
+        val inputManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager  //bierzemy dostep do serwisu o nazwie INPUT..., czyli do klawiatury telefonu i odbieramy to jako klase InputMethodManager
+        if (inputManager.isAcceptingText){
+            inputManager.hideSoftInputFromWindow(currentFocus?.windowToken, 0)                //podajemy token okna, ktore jest w danym momencie aktywne, czyli otwartej klawiatury
+        }
     }
 }
