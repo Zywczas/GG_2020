@@ -54,6 +54,8 @@ class MainActivity : AppCompatActivity() {
         LocalBroadcastManager.getInstance(this).registerReceiver(userDataChangeReceiver, IntentFilter(  //odbieramy dane z CreateUserActivity
             BROADCAST_USER_DATA_CHANGE))
 
+
+
     }
 
     private val userDataChangeReceiver = object : BroadcastReceiver() {
