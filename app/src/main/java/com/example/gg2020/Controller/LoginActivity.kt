@@ -36,11 +36,12 @@ class LoginActivity : AppCompatActivity() {
 
     fun loginLoginBtnClicked (view: View){
         enableSpinner(true)
+        hideKeyboard()
         val email = loginEmailText.text.toString()
         val password = loginPasswordText.text.toString()
-        hideKeyboard()
+
         if (email.isEmpty() || password.isEmpty()){
-            Toast.makeText(this, "Make sure both email and password is filled in", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, "Make sure both email and password are filled in", Toast.LENGTH_LONG).show()
             enableSpinner(false)
             return
         }

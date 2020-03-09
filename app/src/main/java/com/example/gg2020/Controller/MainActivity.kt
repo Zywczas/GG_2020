@@ -24,9 +24,13 @@ import com.example.gg2020.R
 import com.example.gg2020.Services.AuthService
 import com.example.gg2020.Services.UserDataService
 import com.example.gg2020.Utilities.BROADCAST_USER_DATA_CHANGE
+import com.example.gg2020.Utilities.SOCKET_URL
+import io.socket.client.IO
 import kotlinx.android.synthetic.main.nav_header_main.*
 
 class MainActivity : AppCompatActivity() {
+
+    val socket = IO.socket(SOCKET_URL)
 
     private lateinit var appBarConfiguration: AppBarConfiguration
 
@@ -54,10 +58,7 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
-        LocalBroadcastManager.getInstance(this).registerReceiver(userDataChangeReceiver, IntentFilter(  //odbieramy dane z CreateUserActivity
-            BROADCAST_USER_DATA_CHANGE))
 
-         hideKeyboard()
     }
 
     private val userDataChangeReceiver = object : BroadcastReceiver() {
@@ -71,7 +72,19 @@ class MainActivity : AppCompatActivity() {
                 loginBtnNavHeader.text = "Logout"
             }
         }
+    }
 
+    override fun onResume() {
+        super.onResume()
+        LocalBroadcastManager.getInstance(this).registerReceiver(userDataChangeReceiver, IntentFilter(  //odbieramy dane z CreateUserActivity
+            BROADCAST_USER_DATA_CHANGE))
+        socket.connect()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        socket.disconnect()
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(userDataChangeReceiver)
     }
 
     fun loginBtnNavHeaderClicked(view: View){
@@ -102,11 +115,9 @@ class MainActivity : AppCompatActivity() {
                     val channelDesc = descTextField.text.toString()
 
                     //create channel with name and description
-                    hideKeyboard()
+                    socket.emit("newChannel", channelName, channelDesc)
                 }
                 .setNegativeButton("Cancel"){ dialog, which ->
-
-                    hideKeyboard()
 
                 }
                 .show()
@@ -114,7 +125,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun sendMsgBtnClicked (view: View){
-
+        hideKeyboard()
     }
 
 
