@@ -6,7 +6,6 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.Color
 import android.os.Bundle
-import android.os.Message
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
@@ -18,7 +17,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import android.widget.ArrayAdapter
 import android.widget.EditText
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.example.gg2020.Model.Channel
@@ -30,11 +31,20 @@ import com.example.gg2020.Utilities.BROADCAST_USER_DATA_CHANGE
 import com.example.gg2020.Utilities.SOCKET_URL
 import io.socket.client.IO
 import io.socket.emitter.Emitter
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.nav_header_main.*
 
 class MainActivity : AppCompatActivity() {
 
     val socket = IO.socket(SOCKET_URL)
+
+    lateinit var channelAdapter : ArrayAdapter<Channel>
+    private fun setupAdapter (){
+        channelAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_1,
+            MessageService.channels)
+        channel_list.adapter = channelAdapter
+    }
+
 
     private lateinit var appBarConfiguration: AppBarConfiguration
 
@@ -61,12 +71,12 @@ class MainActivity : AppCompatActivity() {
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
-
         socket.connect()
+        setupAdapter()
     }
 
     private val userDataChangeReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
+        override fun onReceive(context: Context, intent: Intent?) {
             if (AuthService.isLoggedIn){
                 userNameNavHeader.text = UserDataService.name
                 userEmailNavHeader.text = UserDataService.email
@@ -74,6 +84,14 @@ class MainActivity : AppCompatActivity() {
                 userImageNavHeader.setImageResource(resourceId)
                 userImageNavHeader.setBackgroundColor(UserDataService.returnAvatarColor(UserDataService.avatarColor))
                 loginBtnNavHeader.text = "Logout"
+
+                MessageService.getChannels(context){complete ->
+                    if (complete) {
+                        channelAdapter.notifyDataSetChanged()                                       //onCrate we have emty array of channels, but this fun tells our adapter about new data in onResume method
+                    } else {
+
+                    }
+                }
             }
         }
     }
@@ -135,9 +153,7 @@ class MainActivity : AppCompatActivity() {
 
             val newChannel = Channel(channelName, channelDesctription, channelId)                   //we create new Channel object were we store data about it
             MessageService.channels.add(newChannel)                                                 //adding new channel to list of all channels
-            println(newChannel.name)
-            println(newChannel.description)
-            println(newChannel.id)
+            channelAdapter.notifyDataSetChanged()                                                   //after creation of new channel and receiving it from API it also refreshes list automatically now
 
         }
     }
