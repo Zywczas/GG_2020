@@ -45,7 +45,7 @@ class MainActivity : AppCompatActivity() {
         channel_list.adapter = channelAdapter
     }
 
-//--------------------------------------------------------------
+//-----------------------------
     private lateinit var appBarConfiguration: AppBarConfiguration
 
     override fun onCreate(savedInstanceState: Bundle?) {
