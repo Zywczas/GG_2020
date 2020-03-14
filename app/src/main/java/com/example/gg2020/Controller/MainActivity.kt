@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.Color
 import android.os.Bundle
+import android.view.Gravity
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
@@ -19,8 +20,8 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.ArrayAdapter
 import android.widget.EditText
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.core.view.GravityCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.example.gg2020.Model.Channel
 import com.example.gg2020.R
@@ -38,8 +39,9 @@ import kotlinx.android.synthetic.main.nav_header_main.*
 class MainActivity : AppCompatActivity() {
 
     val socket = IO.socket(SOCKET_URL)
-
     lateinit var channelAdapter : ArrayAdapter<Channel>
+    var selectedChannel: Channel? = null
+
     private fun setupAdapter (){
         channelAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_1,
             MessageService.channels)
@@ -78,7 +80,13 @@ class MainActivity : AppCompatActivity() {
         if (App.prefs.isLoggedIn){
             AuthService.findUserByEmail(this){}
         } else {
-            mainWelcomeText.text = "Open menu on the left to log in"
+            mainChannelName.text = "Open menu on the left to log in"
+        }
+
+        channel_list.setOnItemClickListener { _, _, position, _ ->
+            selectedChannel = MessageService.channels[position]
+            drawerLayout.closeDrawer(GravityCompat.START)                                           //closes drawer layout to the left (START)
+            updateWithChannel()
         }
     }
 
@@ -91,17 +99,23 @@ class MainActivity : AppCompatActivity() {
                 userImageNavHeader.setImageResource(resourceId)
                 userImageNavHeader.setBackgroundColor(UserDataService.returnAvatarColor(UserDataService.avatarColor))
                 loginBtnNavHeader.text = "Logout"
-                mainWelcomeText.text = ""
 
-                MessageService.getChannels(context){complete ->
+                MessageService.getChannels{complete ->
                     if (complete) {
-                        channelAdapter.notifyDataSetChanged()                                       //onCrate we have empty array of channels, but this fun tells our adapter about new data in onResume method
-                    } else {
-
+                        if (MessageService.channels.count() > 0) {
+                            selectedChannel = MessageService.channels[0]
+                            channelAdapter.notifyDataSetChanged()                                   //onCrate we have empty array of channels, but this fun tells our adapter about new data in onResume method
+                            updateWithChannel()
+                        }
                     }
                 }
             }
         }
+    }
+
+    fun updateWithChannel() {
+        mainChannelName.text = "#${selectedChannel?.name}"
+        //download messages for channel
     }
 
     override fun onResume() {
@@ -125,7 +139,6 @@ class MainActivity : AppCompatActivity() {
             userImageNavHeader.setImageResource(R.drawable.profiledefault)
             userImageNavHeader.setBackgroundColor(Color.TRANSPARENT)
             loginBtnNavHeader.text = "Login"
-            mainWelcomeText.text = "Open menu on the left to log in"
         } else {
             val loginActivity = Intent(this, LoginActivity::class.java)
             startActivity(loginActivity)
@@ -138,7 +151,7 @@ class MainActivity : AppCompatActivity() {
             val dialogView = layoutInflater.inflate(R.layout.add_channel_dialog, null)
 
             builder.setView(dialogView)
-                .setPositiveButton("Add"){ dialog, which ->  
+                .setPositiveButton("Add"){ _, _ ->
                     val nameTextField = dialogView.findViewById<EditText>(R.id.addChannelNameText) //nie mozna odwolac sie bezposrednio do pol tekstowych w DialogView wiec trzeba je wyszukac po ID
                     val descTextField = dialogView.findViewById<EditText>(R.id.addChannelDescText)
                     val channelName = nameTextField.text.toString()
@@ -148,7 +161,7 @@ class MainActivity : AppCompatActivity() {
                     socket.emit("newChannel", channelName, channelDesc)                       //kolejnosc wysylania parametrow jak w API - Event i dane
                     socket.on("channelCreated", onNewChannel)                                //odbiera dane z API, jezeli Event wykryty to Emmitter Listener odbiera informacje
                 }
-                .setNegativeButton("Cancel"){ dialog, which ->
+                .setNegativeButton("Cancel"){ _, _ ->
                 }
                 .show()
         }

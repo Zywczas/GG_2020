@@ -78,11 +78,11 @@ class CreateUserActivity : AppCompatActivity() {
             enableSpinner(false)
             return
         }
-            AuthService.registerUser(this, userEmail, userPassword){registerSuccess ->          //definicja funkcji bierze lambde stad i daje przypisuje jej paramert Boolean a pozniej ja wykonuje
+            AuthService.registerUser(userEmail, userPassword){registerSuccess ->          //definicja funkcji bierze lambde stad i daje przypisuje jej paramert Boolean a pozniej ja wykonuje
                 if (registerSuccess){
-                    AuthService.loginUser(this, userEmail, userPassword){loginSuccess ->
+                    AuthService.loginUser(userEmail, userPassword){loginSuccess ->
                         if (loginSuccess){
-                            AuthService.createUser(this, userName, userEmail, userAvatar, avatarBackgroundColor){createUserSuccess ->
+                            AuthService.createUser(userName, userEmail, userAvatar, avatarBackgroundColor){createUserSuccess ->
                                 if (createUserSuccess){
                                     enableSpinner(false)
                                     val userDataChange = Intent(BROADCAST_USER_DATA_CHANGE)

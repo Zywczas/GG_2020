@@ -15,7 +15,7 @@ import org.json.JSONObject
 
 object AuthService {
 
-    fun registerUser (context: Context, email: String, password: String, complete: (Boolean) -> Unit) {     //nasza funkcja tworzaca nowego uzytkownika potrzebuje email i password, ale Volley potrzebuje jeszcze Context, a complete dajemy zeby wiedziec co robic w dwoch przypadkach true i false
+    fun registerUser (email: String, password: String, complete: (Boolean) -> Unit) {     //nasza funkcja tworzaca nowego uzytkownika potrzebuje email i password, ale Volley potrzebuje jeszcze Context, a complete dajemy zeby wiedziec co robic w dwoch przypadkach true i false
 
         val jsonBody = JSONObject()                                                                 //API na serwerze przyjmuje tylko JSON objects
         jsonBody.put("email", email)                                                         //do JSON body dodajemy key i value
@@ -40,7 +40,7 @@ object AuthService {
     }
 
 
-    fun loginUser (context: Context, email: String, password: String, complete: (Boolean) -> Unit){
+    fun loginUser (email: String, password: String, complete: (Boolean) -> Unit){
 
         val jsonBody = JSONObject()
         jsonBody.put("email", email)
@@ -75,7 +75,7 @@ object AuthService {
         App.prefs.requestQueue.add(loginRequest)
     }
 
-    fun createUser (context: Context, name: String, email: String, avatarName: String, avatarColor: String, complete: (Boolean) -> Unit){
+    fun createUser (name: String, email: String, avatarName: String, avatarColor: String, complete: (Boolean) -> Unit){
 
         val jsonBody = JSONObject()
         jsonBody.put("name", name)                                                           //w tym kroku wysylamy dane nowego uzytkownika do API
