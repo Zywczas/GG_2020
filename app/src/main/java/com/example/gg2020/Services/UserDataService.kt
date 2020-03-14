@@ -1,6 +1,7 @@
 package com.example.gg2020.Services
 
 import android.graphics.Color
+import com.example.gg2020.Controller.App
 import java.util.*
 
 object UserDataService {
@@ -17,9 +18,9 @@ object UserDataService {
         email = ""
         avatarName = ""
         avatarColor = ""
-        AuthService.authToken = ""
-        AuthService.userEmail = ""
-        AuthService.isLoggedIn = false
+        App.prefs.authToken = ""
+        App.prefs.userEmail = ""
+        App.prefs.isLoggedIn = false
     }
 
     fun returnAvatarColor(components: String) : Int {

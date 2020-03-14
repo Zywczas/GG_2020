@@ -32,6 +32,7 @@ import com.example.gg2020.Utilities.SOCKET_URL
 import io.socket.client.IO
 import io.socket.emitter.Emitter
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.content_main.*
 import kotlinx.android.synthetic.main.nav_header_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -45,7 +46,6 @@ class MainActivity : AppCompatActivity() {
         channel_list.adapter = channelAdapter
     }
 
-//-----------------------------
     private lateinit var appBarConfiguration: AppBarConfiguration
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -71,23 +71,31 @@ class MainActivity : AppCompatActivity() {
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+
         socket.connect()
         setupAdapter()
+
+        if (App.prefs.isLoggedIn){
+            AuthService.findUserByEmail(this){}
+        } else {
+            mainWelcomeText.text = "Open menu on the left to log in"
+        }
     }
 
     private val userDataChangeReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent?) {
-            if (AuthService.isLoggedIn){
+            if (App.prefs.isLoggedIn){
                 userNameNavHeader.text = UserDataService.name
                 userEmailNavHeader.text = UserDataService.email
                 val resourceId = resources.getIdentifier(UserDataService.avatarName, "drawable", packageName)
                 userImageNavHeader.setImageResource(resourceId)
                 userImageNavHeader.setBackgroundColor(UserDataService.returnAvatarColor(UserDataService.avatarColor))
                 loginBtnNavHeader.text = "Logout"
+                mainWelcomeText.text = ""
 
                 MessageService.getChannels(context){complete ->
                     if (complete) {
-                        channelAdapter.notifyDataSetChanged()                                       //onCrate we have emty array of channels, but this fun tells our adapter about new data in onResume method
+                        channelAdapter.notifyDataSetChanged()                                       //onCrate we have empty array of channels, but this fun tells our adapter about new data in onResume method
                     } else {
 
                     }
@@ -109,7 +117,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun loginBtnNavHeaderClicked(view: View){
-        if (AuthService.isLoggedIn){
+        if (App.prefs.isLoggedIn){
             // log out
             UserDataService.logout()
             userNameNavHeader.text = ""
@@ -117,6 +125,7 @@ class MainActivity : AppCompatActivity() {
             userImageNavHeader.setImageResource(R.drawable.profiledefault)
             userImageNavHeader.setBackgroundColor(Color.TRANSPARENT)
             loginBtnNavHeader.text = "Login"
+            mainWelcomeText.text = "Open menu on the left to log in"
         } else {
             val loginActivity = Intent(this, LoginActivity::class.java)
             startActivity(loginActivity)
@@ -124,7 +133,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun addChannelBtnClicked (view: View){
-        if (AuthService.isLoggedIn){
+        if (App.prefs.isLoggedIn){
             val builder = AlertDialog.Builder(this)
             val dialogView = layoutInflater.inflate(R.layout.add_channel_dialog, null)
 

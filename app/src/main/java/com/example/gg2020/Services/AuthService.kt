@@ -8,15 +8,12 @@ import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
+import com.example.gg2020.Controller.App
 import com.example.gg2020.Utilities.*
 import org.json.JSONException
 import org.json.JSONObject
 
 object AuthService {
-
-    var isLoggedIn = false
-    var userEmail = ""
-    var authToken = ""
 
     fun registerUser (context: Context, email: String, password: String, complete: (Boolean) -> Unit) {     //nasza funkcja tworzaca nowego uzytkownika potrzebuje email i password, ale Volley potrzebuje jeszcze Context, a complete dajemy zeby wiedziec co robic w dwoch przypadkach true i false
 
@@ -39,7 +36,7 @@ object AuthService {
                 return requestBody.toByteArray()
             }
         }
-        Volley.newRequestQueue(context).add(registerRequest)                                        //web request stworzony wiec teraz dodajemy go do kolejki
+        App.prefs.requestQueue.add(registerRequest)                                        //web request stworzony wiec teraz dodajemy go do kolejki
     }
 
 
@@ -53,9 +50,9 @@ object AuthService {
         val loginRequest = object : JsonObjectRequest(Method.POST, URL_LOGIN, null, Response.Listener {response ->
             //this is where we parse json object
             try {
-                userEmail = response.getString("user")
-                authToken = response.getString("token")                               //ze zwroconego obiektu json pobieramy wartosc dla key "token", wartosc jest typu String
-                isLoggedIn = true
+                App.prefs.userEmail = response.getString("user")
+                App.prefs.authToken = response.getString("token")                               //ze zwroconego obiektu json pobieramy wartosc dla key "token", wartosc jest typu String
+                App.prefs.isLoggedIn = true
                 complete(true)
             } catch (e: JSONException){
                 Log.d("JSON", "EXC: ${e.localizedMessage}")
@@ -75,7 +72,7 @@ object AuthService {
             }
         }
 
-        Volley.newRequestQueue(context).add(loginRequest)
+        App.prefs.requestQueue.add(loginRequest)
     }
 
     fun createUser (context: Context, name: String, email: String, avatarName: String, avatarColor: String, complete: (Boolean) -> Unit){
@@ -116,15 +113,17 @@ object AuthService {
 
             override fun getHeaders(): MutableMap<String, String> {                                 //ta funkcja wysyla header do API w postaci Mapy<Key, Value>
                 val headers = HashMap<String, String>()
-                headers.put("Authorization", "Bearer $authToken")                                   //nazewnictwo z header'a naszej API
+                headers.put("Authorization", "Bearer ${App.prefs.authToken}")                                   //nazewnictwo z header'a naszej API
                 return headers
             }
         }
-        Volley.newRequestQueue(context).add(createUserRequest)
+        App.prefs.requestQueue.add(createUserRequest)
     }
 
     fun findUserByEmail(context: Context, complete: (Boolean) -> Unit){
-        val findUserRequest = object : JsonObjectRequest(Method.GET, "$URL_GET_USER$userEmail",null, Response.Listener { response ->
+        val findUserRequest = object : JsonObjectRequest(Method.GET,
+            "$URL_GET_USER${App.prefs.userEmail}",null,
+            Response.Listener { response ->
             try {
                 UserDataService.name = response.getString("name")
                 UserDataService.email = response.getString("email")
@@ -150,11 +149,11 @@ object AuthService {
 
             override fun getHeaders(): MutableMap<String, String> {                                 //ta funkcja wysyla header do API w postaci Mapy<Key, Value>
                 val headers = HashMap<String, String>()
-                headers.put("Authorization", "Bearer $authToken")                                   //nazewnictwo z header'a naszej API
+                headers.put("Authorization", "Bearer ${App.prefs.authToken}")                                   //nazewnictwo z header'a naszej API
                 return headers
             }
         }
-        Volley.newRequestQueue(context).add(findUserRequest)
+        App.prefs.requestQueue.add(findUserRequest)
     }
 
 
