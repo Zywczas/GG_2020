@@ -5,6 +5,7 @@ import com.android.volley.Response
 import com.android.volley.toolbox.JsonArrayRequest
 import com.example.gg2020.Controller.App
 import com.example.gg2020.Model.Channel
+import com.example.gg2020.Model.Message
 import com.example.gg2020.Utilities.URL_GET_CHANNELS
 import org.json.JSONException
 
@@ -12,6 +13,7 @@ import org.json.JSONException
 
 object MessageService {
     val channels = ArrayList<Channel>()
+    val messages = ArrayList<Message>()
 
     fun getChannels (complete: (Boolean) -> Unit){                                //request from API to GET all created channels, returns an array of JSONObject's
         val channelsRequest = object : JsonArrayRequest (Method.GET, URL_GET_CHANNELS, null, Response.Listener {response ->
