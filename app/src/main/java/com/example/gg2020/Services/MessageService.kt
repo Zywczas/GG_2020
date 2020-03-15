@@ -7,6 +7,7 @@ import com.example.gg2020.Controller.App
 import com.example.gg2020.Model.Channel
 import com.example.gg2020.Model.Message
 import com.example.gg2020.Utilities.URL_GET_CHANNELS
+import com.example.gg2020.Utilities.URL_GET_MESSAGES
 import org.json.JSONException
 
 //storing messages and channels
@@ -15,7 +16,7 @@ object MessageService {
     val channels = ArrayList<Channel>()
     val messages = ArrayList<Message>()
 
-    fun getChannels (complete: (Boolean) -> Unit){                                //request from API to GET all created channels, returns an array of JSONObject's
+    fun getChannels (complete: (Boolean) -> Unit){                                                  //request from API to GET all created channels, returns an array of JSONObject's
         val channelsRequest = object : JsonArrayRequest (Method.GET, URL_GET_CHANNELS, null, Response.Listener {response ->
             try {
                 for (x in 0 until response.length()){
@@ -42,10 +43,60 @@ object MessageService {
 
             override fun getHeaders(): MutableMap<String, String> {                                 //ta funkcja wysyla header do API w postaci Mapy<Key, Value>
                 val headers = HashMap<String, String>()
-                headers.put("Authorization", "Bearer ${App.prefs.authToken}")                                   //nazewnictwo z header'a naszej API
+                headers.put("Authorization", "Bearer ${App.prefs.authToken}")                       //nazewnictwo z header'a naszej API
                 return headers
             }
         }
         App.prefs.requestQueue.add(channelsRequest)
     }
+
+    fun getMessages (channelId: String, complete: (Boolean) -> Unit) {
+        clearMessages()
+        val url = "$URL_GET_MESSAGES$channelId"
+
+        val messagesRequest = object : JsonArrayRequest(Method.GET, url, null, Response.Listener { response ->
+            try {
+                for (x in 0 until response.length()){
+                    val message = response.getJSONObject(x)
+                    val messageBody = message.getString("messageBody")
+                    val channelId = message.getString("channelId")
+                    val id = message.getString("_id")
+                    val userName = message.getString("userName")
+                    val userAvatar = message.getString("userAvatar")
+                    val userAvatarColor = message.getString("userAvatarColor")
+                    val timeStamp = message.getString("timeStamp")
+
+                    val newMessage = Message(messageBody, userName, channelId, userAvatar, userAvatarColor, id, timeStamp)
+                    this.messages.add(newMessage)
+                }
+                complete(true)
+            } catch (e: JSONException){
+                Log.d("JSON", "EXC: ${e.localizedMessage}")
+            }
+        }, Response.ErrorListener { error ->
+            Log.d("ERROR", "Could not retrieve channels")
+            complete(false)
+        }) {
+            override fun getBodyContentType(): String {                                             //2 metody wymagane przez API, pobrane z JSONRequest
+                return "application/json; charset=utf-8"                                            //podajemy body content type
+            }
+
+            override fun getHeaders(): MutableMap<String, String> {                                 //ta funkcja wysyla header do API w postaci Mapy<Key, Value>
+                val headers = HashMap<String, String>()
+                headers.put("Authorization", "Bearer ${App.prefs.authToken}")                                   //nazewnictwo z header'a naszej API
+                return headers
+            }
+        }
+        App.prefs.requestQueue.add(messagesRequest)
+    }
+
+    fun clearMessages(){
+        messages.clear()
+    }
+
+    fun clearChannels() {
+        channels.clear()
+    }
+
+
 }

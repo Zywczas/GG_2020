@@ -7,7 +7,6 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.StringRequest
-import com.android.volley.toolbox.Volley
 import com.example.gg2020.Controller.App
 import com.example.gg2020.Utilities.*
 import org.json.JSONException
@@ -121,9 +120,7 @@ object AuthService {
     }
 
     fun findUserByEmail(context: Context, complete: (Boolean) -> Unit){
-        val findUserRequest = object : JsonObjectRequest(Method.GET,
-            "$URL_GET_USER${App.prefs.userEmail}",null,
-            Response.Listener { response ->
+        val findUserRequest = object : JsonObjectRequest(Method.GET,"$URL_GET_USER${App.prefs.userEmail}",null, Response.Listener { response ->
             try {
                 UserDataService.name = response.getString("name")
                 UserDataService.email = response.getString("email")
