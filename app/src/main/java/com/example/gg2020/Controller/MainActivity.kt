@@ -99,6 +99,9 @@ class MainActivity : AppCompatActivity() {
             drawerLayout.closeDrawer(GravityCompat.START)                                           //closes drawer layout to the left (START)
             updateWithChannel()
         }
+
+        LocalBroadcastManager.getInstance(this).registerReceiver(userDataChangeReceiver,   //odbieramy dane z CreateUserActivity & AuthService.findUser
+            IntentFilter(BROADCAST_USER_DATA_CHANGE))
     }
 
     private val onNewChannel = Emitter.Listener {args ->                                            //przyjmuje z API array elementow typu ANY wiec musimy cast as String
@@ -134,12 +137,6 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        LocalBroadcastManager.getInstance(this).registerReceiver(userDataChangeReceiver, IntentFilter(  //odbieramy dane z CreateUserActivity & AuthService.findUser
-            BROADCAST_USER_DATA_CHANGE))
     }
 
     private val userDataChangeReceiver = object : BroadcastReceiver() {
@@ -180,9 +177,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
-        super.onDestroy()
         socket.disconnect()
         LocalBroadcastManager.getInstance(this).unregisterReceiver(userDataChangeReceiver)
+        super.onDestroy()
     }
 
     fun loginBtnNavHeaderClicked(view: View){
@@ -196,6 +193,7 @@ class MainActivity : AppCompatActivity() {
             userImageNavHeader.setImageResource(R.drawable.profiledefault)
             userImageNavHeader.setBackgroundColor(Color.TRANSPARENT)
             loginBtnNavHeader.text = "Login"
+            mainChannelName.text = "Open menu on the left to log in"
         } else {
             val loginActivity = Intent(this, LoginActivity::class.java)
             startActivity(loginActivity)
@@ -242,7 +240,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun hideKeyboard(){
-        val inputManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager  //bierzemy dostep do serwisu o nazwie INPUT..., czyli do klawiatury telefonu i odbieramy to jako klase InputMethodManager
+        val inputManager =
+            getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager                    //bierzemy dostep do serwisu o nazwie INPUT..., czyli do klawiatury telefonu i odbieramy to jako klase InputMethodManager
         if (inputManager.isAcceptingText){
             inputManager.hideSoftInputFromWindow(currentFocus?.windowToken, 0)                //podajemy token okna, ktore jest w danym momencie aktywne, czyli otwartej klawiatury
         }
