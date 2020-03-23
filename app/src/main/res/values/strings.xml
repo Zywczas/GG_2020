@@ -13,4 +13,25 @@
     <string name="menu_tools">Tools</string>
     <string name="menu_share">Share</string>
     <string name="menu_send">Send</string>
+    <string name="user_name">user name</string>
+    <string name="email">email</string>
+    <string name="password">password</string>
+    <string name="tap_picture_to_generate_user_avatar">Tap picture to generate user avatar</string>
+    <string name="generate_avatar_background">Generate avatar background</string>
+    <string name="create_user">Create user</string>
+    <string name="show">Show</string>
+    <string name="avatar_image">Avatar Image</string>
+    <string name="login">Login</string>
+    <string name="don_t_have_an_account_yet">Don\'t have an account yet?</string>
+    <string name="add_channel">Add channel</string>
+    <string name="channel_name">channel name</string>
+    <string name="channel_description">channel description</string>
+    <string name="send_message">Send message</string>
+    <string name="opening_info">Open menu on the left to log in.\n\nDear User, please note that
+        this app is made only for demonstration purpose, however you can communicate with other
+        people. All users can see your channels and messages. It uses free server which goes into
+        sleep mode after 30 min of non using, so your first communication with the server can be
+        ignored. Just please click the on the same button again if it does not work.</string>
+    <string name="hide">Hide</string>
+    <string name="logout">Logout</string>
 </resources>

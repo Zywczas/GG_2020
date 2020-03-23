@@ -1,5 +1,6 @@
 package com.example.gg2020.Controller
 
+import android.annotation.SuppressLint
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -23,7 +24,6 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.view.GravityCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.gg2020.Adapters.MessageAdapter
 import com.example.gg2020.Model.Channel
 import com.example.gg2020.Model.Message
@@ -89,8 +89,6 @@ class MainActivity : AppCompatActivity() {
 
         if (App.prefs.isLoggedIn){
             AuthService.findUserByEmail(this){}
-        } else {
-            mainChannelName.text = "Open menu on the left to log in"
         }
         setupAdapters()
 
@@ -147,7 +145,7 @@ class MainActivity : AppCompatActivity() {
                 val resourceId = resources.getIdentifier(UserDataService.avatarName, "drawable", packageName)
                 userImageNavHeader.setImageResource(resourceId)
                 userImageNavHeader.setBackgroundColor(UserDataService.returnAvatarColor(UserDataService.avatarColor))
-                loginBtnNavHeader.text = "Logout"
+                loginBtnNavHeader.text = getString(R.string.logout)
 
                 MessageService.getChannels{complete ->
                     if (complete) {
@@ -162,6 +160,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    @SuppressLint("SetTextI18n")
     fun updateWithChannel() {
         mainChannelName.text = "#${selectedChannel?.name}"
         if (selectedChannel != null) {
@@ -192,7 +191,7 @@ class MainActivity : AppCompatActivity() {
             userEmailNavHeader.text = ""
             userImageNavHeader.setImageResource(R.drawable.profiledefault)
             userImageNavHeader.setBackgroundColor(Color.TRANSPARENT)
-            loginBtnNavHeader.text = "Login"
+            loginBtnNavHeader.text = getString(R.string.login)
             mainChannelName.text = "Open menu on the left to log in"
         } else {
             val loginActivity = Intent(this, LoginActivity::class.java)

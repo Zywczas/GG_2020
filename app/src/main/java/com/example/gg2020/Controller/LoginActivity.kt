@@ -24,10 +24,10 @@ class LoginActivity : AppCompatActivity() {
         showHideBtn.setOnClickListener{
             if (showHideBtn.text.toString().equals("Show")){
                 loginPasswordText.transformationMethod = HideReturnsTransformationMethod.getInstance()
-                showHideBtn.text = "Hide"
+                showHideBtn.text = getString(R.string.hide)
             } else{
                 loginPasswordText.transformationMethod = PasswordTransformationMethod.getInstance()
-                showHideBtn.text = "Show"
+                showHideBtn.text = getString(R.string.show)
             }
         }
 

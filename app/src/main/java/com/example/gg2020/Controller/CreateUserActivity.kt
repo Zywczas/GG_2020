@@ -30,10 +30,10 @@ class CreateUserActivity : AppCompatActivity() {
         showHideBtn.setOnClickListener{
             if (showHideBtn.text.toString().equals("Show")){
                 createPasswordText.transformationMethod = HideReturnsTransformationMethod.getInstance()
-                showHideBtn.text = "Hide"
+                showHideBtn.text = getString(R.string.hide)
             } else{
                 createPasswordText.transformationMethod = PasswordTransformationMethod.getInstance()
-                showHideBtn.text = "Show"
+                showHideBtn.text = getString(R.string.show)
             }
         }
     }
@@ -89,17 +89,17 @@ class CreateUserActivity : AppCompatActivity() {
                                     LocalBroadcastManager.getInstance(this).sendBroadcast(userDataChange) //wysylamy tylko info, nie wartosci
                                     finish()                                                            //wylacza ta activity i wraca do poprzedniej
                                 } else {
-                                    Toast.makeText(this, "create user error. Please change email and try again.", Toast.LENGTH_LONG).show()
+                                    errorToast()
                                     enableSpinner(false)
                                 }
                             }
                         } else {
-                            Toast.makeText(this, "login error. Please change email and try again.", Toast.LENGTH_LONG).show()
+                            errorToast()
                             enableSpinner(false)
                         }
                     }
                 } else {
-                    Toast.makeText(this, "register error. Please change email and try again.", Toast.LENGTH_LONG).show()
+                    errorToast()
                     enableSpinner(false)
                 }
             }
@@ -107,7 +107,7 @@ class CreateUserActivity : AppCompatActivity() {
     }
 
     fun errorToast(){
-        Toast.makeText(this, "Something went wrong. Please try again.", Toast.LENGTH_LONG).show()
+        Toast.makeText(this, "Something went wrong. Please change email and try again.", Toast.LENGTH_LONG).show()
         enableSpinner(false)
     }
 

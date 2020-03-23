@@ -15,7 +15,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView3"
-        app:srcCompat="@drawable/profiledefault" />
+        app:srcCompat="@drawable/profiledefault"
+        android:contentDescription="@string/avatar_image" />
 
     <EditText
         android:id="@+id/createUserNameText"
@@ -25,11 +26,12 @@
         android:layout_marginTop="32dp"
         android:layout_marginEnd="32dp"
         android:ems="10"
-        android:hint="user name"
+        android:hint="@string/user_name"
         android:inputType="textPersonName"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:importantForAutofill="no" />
 
     <EditText
         android:id="@+id/createEmailText"
@@ -39,11 +41,13 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="32dp"
         android:ems="10"
-        android:hint="email"
+        android:hint="@string/email"
         android:inputType="textPersonName"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/createUserNameText" />
+        app:layout_constraintTop_toBottomOf="@+id/createUserNameText"
+        tools:ignore="TextFields"
+        android:importantForAutofill="no" />
 
     <EditText
         android:id="@+id/createPasswordText"
@@ -53,19 +57,20 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="32dp"
         android:ems="10"
-        android:hint="password"
+        android:hint="@string/password"
         android:inputType="textPassword"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/createEmailText" />
+        app:layout_constraintTop_toBottomOf="@+id/createEmailText"
+        android:importantForAutofill="no" />
 
     <TextView
         android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:text="Tap picture to generate user avatar"
+        android:text="@string/tap_picture_to_generate_user_avatar"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -80,7 +85,7 @@
         android:layout_marginEnd="32dp"
         android:background="@color/colorPrimary"
         android:onClick="generateColorClicked"
-        android:text="Generate avatar background"
+        android:text="@string/generate_avatar_background"
         android:textColor="@android:color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -95,7 +100,7 @@
         android:layout_marginBottom="16dp"
         android:background="@color/colorPrimary"
         android:onClick="createUserClicked"
-        android:text="Create user"
+        android:text="@string/create_user"
         android:textColor="@android:color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -108,7 +113,7 @@
         android:layout_height="35dp"
         android:layout_marginEnd="32dp"
         android:background="@color/colorPrimary"
-        android:text="Show"
+        android:text="@string/show"
         android:textColor="@android:color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/createPasswordText" />
