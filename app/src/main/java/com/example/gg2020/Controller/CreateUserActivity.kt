@@ -11,7 +11,6 @@ import android.widget.Toast
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.example.gg2020.R
 import com.example.gg2020.Services.AuthService
-import com.example.gg2020.Services.UserDataService
 import com.example.gg2020.Utilities.BROADCAST_USER_DATA_CHANGE
 import kotlinx.android.synthetic.main.activity_create_user.*
 import java.util.*
