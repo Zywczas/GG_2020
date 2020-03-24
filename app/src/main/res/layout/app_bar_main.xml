@@ -23,7 +23,9 @@
         android:background="@color/colorPrimary"
         app:layout_anchor="@+id/appBarLayout"
         app:layout_anchorGravity="center"
-        app:popupTheme="@style/AppTheme.PopupOverlay" />
+        app:popupTheme="@style/AppTheme.PopupOverlay"
+        app:title="GG 2020"
+        app:titleTextColor="@android:color/white" />
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
