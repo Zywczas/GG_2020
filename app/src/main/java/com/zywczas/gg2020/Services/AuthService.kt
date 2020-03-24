@@ -14,7 +14,7 @@ import org.json.JSONObject
 
 object AuthService {
 
-    fun registerUser (email: String, password: String, complete: (Boolean) -> Unit) {     //nasza funkcja tworzaca nowego uzytkownika potrzebuje email i password, ale Volley potrzebuje jeszcze Context, a complete dajemy zeby wiedziec co robic w dwoch przypadkach true i false
+    fun registerUser (email: String, password: String, complete: (Boolean) -> Unit) {               //nasza funkcja tworzaca nowego uzytkownika potrzebuje email i password, ale Volley potrzebuje jeszcze Context, a complete dajemy zeby wiedziec co robic w dwoch przypadkach true i false
 
         val jsonBody = JSONObject()                                                                 //API na serwerze przyjmuje tylko JSON objects
         jsonBody.put("email", email)                                                         //do JSON body dodajemy key i value
