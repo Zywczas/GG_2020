@@ -1,4 +1,4 @@
-package com.example.gg2020.Services
+package com.zywczas.gg2020.Services
 
 import android.content.Context
 import android.content.Intent
@@ -7,8 +7,8 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.StringRequest
-import com.example.gg2020.Controller.App
-import com.example.gg2020.Utilities.*
+import com.zywczas.gg2020.Controller.App
+import com.zywczas.gg2020.Utilities.*
 import org.json.JSONException
 import org.json.JSONObject
 

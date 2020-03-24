@@ -1,4 +1,4 @@
-package com.example.gg2020.ui.home
+package com.zywczas.gg2020.ui.home
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

@@ -1,4 +1,4 @@
-package com.example.gg2020.Controller
+package com.zywczas.gg2020.Controller
 
 import android.annotation.SuppressLint
 import android.content.BroadcastReceiver
@@ -24,15 +24,15 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.view.GravityCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.gg2020.Adapters.MessageAdapter
-import com.example.gg2020.Model.Channel
-import com.example.gg2020.Model.Message
-import com.example.gg2020.R
-import com.example.gg2020.Services.AuthService
-import com.example.gg2020.Services.MessageService
-import com.example.gg2020.Services.UserDataService
-import com.example.gg2020.Utilities.BROADCAST_USER_DATA_CHANGE
-import com.example.gg2020.Utilities.SOCKET_URL
+import com.zywczas.gg2020.Adapters.MessageAdapter
+import com.zywczas.gg2020.Model.Channel
+import com.zywczas.gg2020.Model.Message
+import com.zywczas.gg2020.R
+import com.zywczas.gg2020.Services.AuthService
+import com.zywczas.gg2020.Services.MessageService
+import com.zywczas.gg2020.Services.UserDataService
+import com.zywczas.gg2020.Utilities.BROADCAST_USER_DATA_CHANGE
+import com.zywczas.gg2020.Utilities.SOCKET_URL
 import io.socket.client.IO
 import io.socket.emitter.Emitter
 import kotlinx.android.synthetic.main.activity_main.*

@@ -1,4 +1,4 @@
-package com.example.gg2020
+package com.zywczas.gg2020
 
 import org.junit.Test
 

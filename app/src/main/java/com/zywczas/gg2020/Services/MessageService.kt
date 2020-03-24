@@ -1,13 +1,13 @@
-package com.example.gg2020.Services
+package com.zywczas.gg2020.Services
 
 import android.util.Log
 import com.android.volley.Response
 import com.android.volley.toolbox.JsonArrayRequest
-import com.example.gg2020.Controller.App
-import com.example.gg2020.Model.Channel
-import com.example.gg2020.Model.Message
-import com.example.gg2020.Utilities.URL_GET_CHANNELS
-import com.example.gg2020.Utilities.URL_GET_MESSAGES
+import com.zywczas.gg2020.Controller.App
+import com.zywczas.gg2020.Model.Channel
+import com.zywczas.gg2020.Model.Message
+import com.zywczas.gg2020.Utilities.URL_GET_CHANNELS
+import com.zywczas.gg2020.Utilities.URL_GET_MESSAGES
 import org.json.JSONException
 
 //storing messages and channels

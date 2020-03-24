@@ -1,4 +1,4 @@
-package com.example.gg2020.ui.home
+package com.zywczas.gg2020.ui.home
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,7 +8,7 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import com.example.gg2020.R
+import com.zywczas.gg2020.R
 
 class HomeFragment : Fragment() {
 
