@@ -21,9 +21,7 @@
     <string name="send_message">Send message</string>
     <string name="opening_info">Open menu on the left to log in.\n\nDear User, please note that
         this app is made only for demonstration purpose, however you can communicate with other
-        people. All users can see your channels and messages. It uses free server which goes into
-        sleep mode after 30 min of non using, so your first communication with the server can be
-        ignored. Just please click the on the same button again if it does not work.</string>
+        people. All users can see your channels and messages.</string>
     <string name="hide">Hide</string>
     <string name="logout">Logout</string>
 </resources>
