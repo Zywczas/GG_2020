@@ -95,7 +95,7 @@ class MainActivity : AppCompatActivity() {
 
     private val onNewChannel = Emitter.Listener {args ->                                            //przyjmuje z API array elementow typu ANY wiec musimy cast as String
         if (App.prefs.isLoggedIn) {
-            runOnUiThread {                                                                         //Emmiter Listener dziala na worker Thread zeby nie blokowac calego UI naszej aplikacji wiec tutaj kazemy mu przejsc na glowny thread japo tym jak juz pobierze wyniki (args), zeby nasze UI zostalo zauktualizowane
+            runOnUiThread {                                                                         //Emmiter Listener dziala na worker Thread zeby nie blokowac calego UI naszej aplikacji wiec tutaj kazemy mu przejsc na glowny thread po tym jak juz pobierze wyniki (args), zeby nasze UI zostalo zauktualizowane
                 val channelName = args[0] as String
                 val channelDesctription = args[1] as String
                 val channelId = args[2] as String
@@ -142,7 +142,7 @@ class MainActivity : AppCompatActivity() {
                     if (complete) {
                         if (MessageService.channels.count() > 0) {
                             selectedChannel = MessageService.channels[0]
-                            channelAdapter.notifyDataSetChanged()                                   //onCrate we have empty array of channels, but this fun tells our adapter about new data in onResume method
+                            channelAdapter.notifyDataSetChanged()                                   //onCrate we have empty array of channels, but this fun tells our adapter about new data in onCreate method
                             updateWithChannel()
                         }
                     }

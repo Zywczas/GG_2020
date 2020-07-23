@@ -16,13 +16,13 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
-class MessageAdapter (val context: Context, val messages: ArrayList<Message>) : RecyclerView.Adapter<MessageAdapter.ViewHolder>() {
+class MessageAdapter (private val context: Context, private val messages: ArrayList<Message>) : RecyclerView.Adapter<MessageAdapter.ViewHolder>() {
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val userImage = itemView.findViewById<ImageView>(R.id.messageUserImage)
-        val timeStamp = itemView.findViewById<TextView>(R.id.timeStampLbl)
-        val userName = itemView.findViewById<TextView>(R.id.messageUserNameLbl)
-        val messageBody = itemView.findViewById<TextView>(R.id.messageBodyLbl)
+        private val userImage = itemView.findViewById<ImageView>(R.id.messageUserImage)
+        private val timeStamp = itemView.findViewById<TextView>(R.id.timeStampLbl)
+        private val userName = itemView.findViewById<TextView>(R.id.messageUserNameLbl)
+        private val messageBody = itemView.findViewById<TextView>(R.id.messageBodyLbl)
 
         fun bindMessage (context: Context, message: Message) {
             val resourceId = context.resources.getIdentifier(message.userAvatar, "drawable", context.packageName)
@@ -37,7 +37,6 @@ class MessageAdapter (val context: Context, val messages: ArrayList<Message>) : 
     fun returnDateString(isoString: String) : String {
         // 2017-09-11T01:16:18.858Z - this is what API gives
         // Monday 4:35 PM - this is what we want
-
         val isoFormatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())   //format to parse String into date
         isoFormatter.timeZone = TimeZone.getTimeZone("UTC")                                            //UTC - Coordinated Universal Time (Standard)
         var convertedDate = Date()

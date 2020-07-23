@@ -17,17 +17,19 @@ import java.util.*
 
 class CreateUserActivity : AppCompatActivity() {
 
-    var userAvatar = "profileDefault"                                                               //zmienna trzymajaca info o wybranym losowo obrazku, ale jak ktos nie chce wybrac to domyslny obrazek bedzie obrazkiem o nazwie profileDefault z naszej bazy obrazkow
-    var avatarBackgroundColor = "[0.5, 0.5, 0.5, 1]"                                                //RGB color values, wartosc 1 to alpha, przyszlo to z iOS - normalnie RGB ma wartosci od 0 do 255 ale to jest przekonrwertowane na 0-1
+    private var userAvatar = "profileDefault"                                                               //zmienna trzymajaca info o wybranym losowo obrazku, ale jak ktos nie chce wybrac to domyslny obrazek bedzie obrazkiem o nazwie profileDefault z naszej bazy obrazkow
+    private var avatarBackgroundColor = "[0.5, 0.5, 0.5, 1]"                                                //RGB color values, wartosc 1 to alpha, przyszlo to z iOS - normalnie RGB ma wartosci od 0 do 255 ale to jest przekonrwertowane na 0-1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_user)
-
         createSpinner.visibility = View.INVISIBLE                                                   //ustawia widocznosc danego View
+        setupOnClickListeners()
+    }
 
+    private fun setupOnClickListeners() {
         showHideBtn.setOnClickListener{
-            if (showHideBtn.text.toString().equals("Show")){
+            if (showHideBtn.text.toString() == "Show"){
                 createPasswordText.transformationMethod = HideReturnsTransformationMethod.getInstance()
                 showHideBtn.text = getString(R.string.hide)
             } else{
@@ -41,13 +43,12 @@ class CreateUserActivity : AppCompatActivity() {
         val random = Random()
         val color = random.nextInt(2)                                                   //creates random number between 0-2 but 2 is excluded, so it can be or 0 or 1
         val avatar = random.nextInt(28)                                                 //because we have 27 images to choose from
-
-        if (color == 0){
-            userAvatar = "light$avatar"
-        } else {
-            userAvatar = "dark$avatar"
-        }
-
+        userAvatar =
+            if (color == 0){
+                "light$avatar"
+            } else {
+                "dark$avatar"
+            }
         val resourceId = resources.getIdentifier(userAvatar, "drawable", packageName)
         createAvatarImageView.setImageResource(resourceId)
     }
@@ -57,9 +58,7 @@ class CreateUserActivity : AppCompatActivity() {
         val r = random.nextInt(255)
         val g = random.nextInt(255)
         val b = random.nextInt(255)
-
         createAvatarImageView.setBackgroundColor(Color.rgb(r,g,b))
-
         val savedR = r.toDouble() / 255                                                     //konwertujemy wartosc 0-255 na wartosc 0-1, w takim formacie color bedzie
         val savedG = g.toDouble() /255                                                      //przekazany pozniej do zdjecia profilowego
         val savedB = b.toDouble() / 255
@@ -77,6 +76,7 @@ class CreateUserActivity : AppCompatActivity() {
             enableSpinner(false)
             return
         }
+        //todo ogarnac to
             AuthService.registerUser(userEmail, userPassword){registerSuccess ->          //definicja funkcji bierze lambde stad i daje przypisuje jej paramert Boolean a pozniej ja wykonuje
                 if (registerSuccess){
                     AuthService.loginUser(userEmail, userPassword){loginSuccess ->
@@ -102,15 +102,14 @@ class CreateUserActivity : AppCompatActivity() {
                     enableSpinner(false)
                 }
             }
-
     }
-
-    fun errorToast(){
+//todo wrzucic toasty stad do 1 funkcji
+    private fun errorToast(){
         Toast.makeText(this, "Something went wrong. Please change email and try again.", Toast.LENGTH_LONG).show()
         enableSpinner(false)
     }
 
-    fun enableSpinner (enable: Boolean){                                                            //jezeli klikniemy guzik Create User to inne guziki sa wylaczone zeby,
+    private fun enableSpinner (enable: Boolean){                                                            //jezeli klikniemy guzik Create User to inne guziki sa wylaczone zeby,
         if (enable){                                                                                //uzytkownik nie klikal ciagle, oraz wlacza prgress bar
             createSpinner.visibility = View.VISIBLE
         } else {

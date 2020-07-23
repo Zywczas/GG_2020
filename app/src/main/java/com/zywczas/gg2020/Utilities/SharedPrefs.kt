@@ -5,13 +5,14 @@ import android.content.SharedPreferences
 import com.android.volley.toolbox.Volley
 
 class SharedPrefs (context: Context) {
+    //todo sprawdzic czy wszystkie komentarze usuniete
 
     val PREF_FILENAME = "prefs"
     private val prefs: SharedPreferences = context.getSharedPreferences(PREF_FILENAME, 0)    //calls values from/to saved data in mobile phone
 
-    val IS_LOGGED_IN = "isLoggedIn"
-    val AUTH_TOKEN = "authToken"
-    val USER_EMAIL = "userEmail"
+    private val IS_LOGGED_IN = "isLoggedIn"
+    private val AUTH_TOKEN = "authToken"
+    private val USER_EMAIL = "userEmail"
 
     var isLoggedIn: Boolean
         get() = prefs.getBoolean(IS_LOGGED_IN, false)                                      //custom getters and setters
