@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.zywczas.gg2020.R
-
+//todo usunac ten fragment
 class HomeFragment : Fragment() {
 
     private lateinit var homeViewModel: HomeViewModel
