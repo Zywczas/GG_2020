@@ -69,7 +69,6 @@ class MainActivity : AppCompatActivity() {
                 runOnUiThread {                                                                         //Emmiter Listener dziala na worker Thread zeby nie blokowac calego UI naszej aplikacji wiec tutaj kazemy mu przejsc na glowny thread po tym jak juz pobierze wyniki (args), zeby nasze UI zostalo zauktualizowane
                     val channelName = args[0] as String
                     val channelId = args[2] as String
-
                     val newChannel = Channel(channelName, channelId)               //we create new Channel object were we store data about it
                     MessageService.channels.add(newChannel)                                             //adding new channel to list of all channels
                     channelAdapter.notifyDataSetChanged()                                               //after creation of new channel and receiving it from API it also refreshes list automatically now
@@ -90,7 +89,7 @@ class MainActivity : AppCompatActivity() {
                         val userAvatarColor = args[5] as String
                         val id = args[6] as String
                         val timeStamp = args[7] as String
-                        val newMessage = Message(msgBody, userName, channelId, userAvatar, userAvatarColor, //receiving new message from API, creating object Message and storing it in an ArrayList<Message>
+                        val newMessage = Message(msgBody, userName, userAvatar, userAvatarColor, //receiving new message from API, creating object Message and storing it in an ArrayList<Message>
                             id, timeStamp)
                         MessageService.messages.add(newMessage)
                         messageAdapter.notifyDataSetChanged()

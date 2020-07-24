@@ -10,8 +10,6 @@ import com.zywczas.gg2020.Utilities.URL_GET_CHANNELS
 import com.zywczas.gg2020.Utilities.URL_GET_MESSAGES
 import org.json.JSONException
 
-//storing messages and channels
-
 object MessageService {
     val channels = ArrayList<Channel>()
     val messages = ArrayList<Message>()
@@ -32,7 +30,7 @@ object MessageService {
                 Log.d("JSON", "EXC: ${e.localizedMessage}")
             }
 
-        }, Response.ErrorListener { error ->
+        }, Response.ErrorListener {
             Log.d("ERROR", "Could not retrieve channels")
             complete(false)
         }){
@@ -58,14 +56,13 @@ object MessageService {
                 for (x in 0 until response.length()){
                     val message = response.getJSONObject(x)
                     val messageBody = message.getString("messageBody")
-                    val channelId = message.getString("channelId")
                     val id = message.getString("_id")
                     val userName = message.getString("userName")
                     val userAvatar = message.getString("userAvatar")
                     val userAvatarColor = message.getString("userAvatarColor")
                     val timeStamp = message.getString("timeStamp")
 
-                    val newMessage = Message(messageBody, userName, channelId, userAvatar, userAvatarColor, id, timeStamp)
+                    val newMessage = Message(messageBody, userName, userAvatar, userAvatarColor, id, timeStamp)
                     this.messages.add(newMessage)
                 }
                 complete(true)
