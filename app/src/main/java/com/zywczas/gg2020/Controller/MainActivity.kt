@@ -7,21 +7,13 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.Color
 import android.os.Bundle
-import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.navigateUp
-import androidx.navigation.ui.setupActionBarWithNavController
-import androidx.navigation.ui.setupWithNavController
-import androidx.drawerlayout.widget.DrawerLayout
-import com.google.android.material.navigation.NavigationView
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.ArrayAdapter
 import android.widget.EditText
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -41,20 +33,20 @@ import kotlinx.android.synthetic.main.content_main.*
 import kotlinx.android.synthetic.main.nav_header_main.*
 
 class MainActivity : AppCompatActivity() {
-//todo dodac private
-    val socket = IO.socket(SOCKET_URL)
-    lateinit var channelAdapter : ArrayAdapter<Channel>
-    lateinit var messageAdapter : MessageAdapter
-    var selectedChannel: Channel? = null
+
+    private val socket = IO.socket(SOCKET_URL)
+    private lateinit var channelAdapter : ArrayAdapter<Channel>
+    private lateinit var messageAdapter : MessageAdapter
+    private var selectedChannel: Channel? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        //todo poustawiac kolejnosc ladowan
         setupDrawer()
 
-        socket.connect()
-        socket.on("channelCreated", onNewChannel)                                             //odbiera dane z API caly czas , jezeli Event wykryty to Emmitter Listener odbiera informacje
-        socket.on("messageCreated", onNewMessage)
+        setupSocket()
+
 
         if (App.prefs.isLoggedIn){
             AuthService.findUserByEmail(this){}
@@ -78,6 +70,46 @@ class MainActivity : AppCompatActivity() {
         drawer_layout.addDrawerListener(toggle)
         toggle.syncState()
     }
+    //todo skrocic te funkcje
+    private fun setupSocket(){
+        val onNewChannel = Emitter.Listener {args ->                                            //przyjmuje z API array elementow typu ANY wiec musimy cast as String
+            if (App.prefs.isLoggedIn) {
+                runOnUiThread {                                                                         //Emmiter Listener dziala na worker Thread zeby nie blokowac calego UI naszej aplikacji wiec tutaj kazemy mu przejsc na glowny thread po tym jak juz pobierze wyniki (args), zeby nasze UI zostalo zauktualizowane
+                    val channelName = args[0] as String
+                    val channelDesctription = args[1] as String
+                    val channelId = args[2] as String
+
+                    val newChannel = Channel(channelName, channelDesctription, channelId)               //we create new Channel object were we store data about it
+                    MessageService.channels.add(newChannel)                                             //adding new channel to list of all channels
+                    channelAdapter.notifyDataSetChanged()                                               //after creation of new channel and receiving it from API it also refreshes list automatically now
+                }
+            }
+        }
+
+        val onNewMessage = Emitter.Listener { args ->
+            if (App.prefs.isLoggedIn) {
+                runOnUiThread {
+                    val channelId = args[2] as String
+                    if (channelId == selectedChannel?.id) {
+                        val msgBody = args[0] as String                                              //args[1] is userId which we don't need
+                        val userName = args[3] as String
+                        val userAvatar = args[4] as String
+                        val userAvatarColor = args[5] as String
+                        val id = args[6] as String
+                        val timeStamp = args[7] as String
+                        val newMessage = Message(msgBody, userName, channelId, userAvatar, userAvatarColor, //receiving new message from API, creating object Message and storing it in an ArrayList<Message>
+                            id, timeStamp)
+                        MessageService.messages.add(newMessage)
+                        messageAdapter.notifyDataSetChanged()
+                        messageListView.smoothScrollToPosition(messageAdapter.itemCount - 1)
+                    }
+                }
+            }
+        }
+        socket.connect()
+        socket.on("channelCreated", onNewChannel)                                             //odbiera dane z API caly czas , jezeli Event wykryty to Emmitter Listener odbiera informacje
+        socket.on("messageCreated", onNewMessage)
+    }
 
     private fun setupAdapters (){
         channelAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_1,
@@ -88,41 +120,6 @@ class MainActivity : AppCompatActivity() {
         messageListView.adapter = messageAdapter
         val layoutManager = LinearLayoutManager(this)
         messageListView.layoutManager = layoutManager
-    }
-
-    private val onNewChannel = Emitter.Listener {args ->                                            //przyjmuje z API array elementow typu ANY wiec musimy cast as String
-        if (App.prefs.isLoggedIn) {
-            runOnUiThread {                                                                         //Emmiter Listener dziala na worker Thread zeby nie blokowac calego UI naszej aplikacji wiec tutaj kazemy mu przejsc na glowny thread po tym jak juz pobierze wyniki (args), zeby nasze UI zostalo zauktualizowane
-                val channelName = args[0] as String
-                val channelDesctription = args[1] as String
-                val channelId = args[2] as String
-
-                val newChannel = Channel(channelName, channelDesctription, channelId)               //we create new Channel object were we store data about it
-                MessageService.channels.add(newChannel)                                             //adding new channel to list of all channels
-                channelAdapter.notifyDataSetChanged()                                               //after creation of new channel and receiving it from API it also refreshes list automatically now
-            }
-        }
-    }
-
-    private val onNewMessage = Emitter.Listener { args ->
-        if (App.prefs.isLoggedIn) {
-            runOnUiThread {
-                val channelId = args[2] as String
-                if (channelId == selectedChannel?.id) {
-                    val msgBody = args[0] as String                                              //args[1] is userId which we don't need
-                    val userName = args[3] as String
-                    val userAvatar = args[4] as String
-                    val userAvatarColor = args[5] as String
-                    val id = args[6] as String
-                    val timeStamp = args[7] as String
-                    val newMessage = Message(msgBody, userName, channelId, userAvatar, userAvatarColor, //receiving new message from API, creating object Message and storing it in an ArrayList<Message>
-                        id, timeStamp)
-                    MessageService.messages.add(newMessage)
-                    messageAdapter.notifyDataSetChanged()
-                    messageListView.smoothScrollToPosition(messageAdapter.itemCount - 1)
-                }
-            }
-        }
     }
 
     private val userDataChangeReceiver = object : BroadcastReceiver() {
