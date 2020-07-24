@@ -47,10 +47,9 @@ object AuthService {
         val requestBody = jsonBody.toString()
 
         val loginRequest = object : JsonObjectRequest(Method.POST, URL_LOGIN, null, Response.Listener {response ->
-            //this is where we parse json object
             try {
                 App.prefs.userEmail = response.getString("user")
-                App.prefs.authToken = response.getString("token")                               //ze zwroconego obiektu json pobieramy wartosc dla key "token", wartosc jest typu String
+                App.prefs.authToken = response.getString("token")
                 App.prefs.isLoggedIn = true
                 complete(true)
             } catch (e: JSONException){
@@ -61,7 +60,7 @@ object AuthService {
         }, Response.ErrorListener { error ->
             Log.d("ERROR", "cannot log in user: $error")
             complete(false)
-        }){                                                                                        //now we specify body content type
+        }){
             override fun getBodyContentType(): String {
                 return "application/json; charset=utf-8"
             }
@@ -77,15 +76,16 @@ object AuthService {
     fun createUser (name: String, email: String, avatarName: String, avatarColor: String, complete: (Boolean) -> Unit){
 
         val jsonBody = JSONObject()
-        jsonBody.put("name", name)                                                           //w tym kroku wysylamy dane nowego uzytkownika do API
-        jsonBody.put("email", email)                                                         //kolejnosc keys musi byc taka sama jak w API
+        //order must be the same as in API
+        jsonBody.put("name", name)
+        jsonBody.put("email", email)
         jsonBody.put("avatarName", avatarName)
         jsonBody.put("avatarColor", avatarColor)
         val requestBody = jsonBody.toString()
 
         val createUserRequest = object : JsonObjectRequest (Method.POST, URL_CREATE_USER, null, Response.Listener { response ->
 
-            try {                                                                                   //pobieranie danych ze zwroconego obiektu JSON
+            try {
                 UserDataService.name = response.getString("name")
                 UserDataService.email = response.getString("email")
                 UserDataService.avatarColor = response.getString("avatarColor")
@@ -102,17 +102,17 @@ object AuthService {
             Log.d("ERROR", "cannot add user: $error")
             complete(false)
         }){
-            override fun getBodyContentType(): String {                                             //3 metody wymagane przez API, pobrane z JSONRequest
-                return "application/json; charset=utf-8"                                            //podajemy body content type
+            override fun getBodyContentType(): String {
+                return "application/json; charset=utf-8"
             }
 
             override fun getBody(): ByteArray {
                 return requestBody.toByteArray()
             }
 
-            override fun getHeaders(): MutableMap<String, String> {                                 //ta funkcja wysyla header do API w postaci Mapy<Key, Value>
+            override fun getHeaders(): MutableMap<String, String> {
                 val headers = HashMap<String, String>()
-                headers.put("Authorization", "Bearer ${App.prefs.authToken}")                                   //nazewnictwo z header'a naszej API
+                headers.put("Authorization", "Bearer ${App.prefs.authToken}")
                 return headers
             }
         }
@@ -120,7 +120,8 @@ object AuthService {
     }
 
     fun findUserByEmail(context: Context, complete: (Boolean) -> Unit){
-        val findUserRequest = object : JsonObjectRequest(Method.GET,"$URL_GET_USER${App.prefs.userEmail}",null, Response.Listener { response ->
+        val findUserRequest = object : JsonObjectRequest(Method.GET,
+            "$URL_GET_USER${App.prefs.userEmail}",null, Response.Listener { response ->
             try {
                 UserDataService.name = response.getString("name")
                 UserDataService.email = response.getString("email")
@@ -140,13 +141,13 @@ object AuthService {
             Log.d("ERROR", "cannot find user: $error")
             complete(false)
         }){
-            override fun getBodyContentType(): String {                                             //2 metody wymagane przez API, pobrane z JSONRequest
-                return "application/json; charset=utf-8"                                            //podajemy body content type
+            override fun getBodyContentType(): String {
+                return "application/json; charset=utf-8"
             }
 
-            override fun getHeaders(): MutableMap<String, String> {                                 //ta funkcja wysyla header do API w postaci Mapy<Key, Value>
+            override fun getHeaders(): MutableMap<String, String> {
                 val headers = HashMap<String, String>()
-                headers.put("Authorization", "Bearer ${App.prefs.authToken}")                                   //nazewnictwo z header'a naszej API
+                headers.put("Authorization", "Bearer ${App.prefs.authToken}")
                 return headers
             }
         }

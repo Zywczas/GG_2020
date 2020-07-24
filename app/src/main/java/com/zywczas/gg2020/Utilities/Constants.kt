@@ -1,4 +1,5 @@
 package com.zywczas.gg2020.Utilities
+//todo zmienic nazwy pakietow na male litery
 
 const val BASE_URL = "https://gg2020.herokuapp.com/v1/"
 const val SOCKET_URL = "https://gg2020.herokuapp.com/"
@@ -12,4 +13,5 @@ const val URL_GET_MESSAGES = "${BASE_URL}message/byChannel/"
 //broadcast constants
 const val BROADCAST_USER_DATA_CHANGE = "BROADCAST_USER_DATA_CHANGE"
 
+//todo sprawdzic czy potrzebuje wsystkie stringi
 

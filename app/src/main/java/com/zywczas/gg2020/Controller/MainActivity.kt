@@ -42,51 +42,45 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        //todo poustawiac kolejnosc ladowan
         setupDrawer()
-
         setupSocket()
-
-
-        if (App.prefs.isLoggedIn){
-            AuthService.findUserByEmail(this){}
-        }
+        getUserIfLoggedIn()
+        setupUserDataReceiver()
         setupAdapters()
-
-        channel_list.setOnItemClickListener { _, _, position, _ ->
-            selectedChannel = MessageService.channels[position]
-            drawer_layout.closeDrawer(GravityCompat.START)                                           //closes drawer layout to the left (START)
-            updateWithChannel()
-        }
-
-        LocalBroadcastManager.getInstance(this).registerReceiver(userDataChangeReceiver,   //odbieramy dane z CreateUserActivity & AuthService.findUser
-            IntentFilter(BROADCAST_USER_DATA_CHANGE))
+        setupOnClickListeners()
     }
 
-//todo sprawdzic czy potrzebuje wsystkie stringi
     private fun setupDrawer(){
         val toggle = ActionBarDrawerToggle(this, drawer_layout, toolbar,
             R.string.navigation_drawer_open, R.string.navigation_drawer_close)
         drawer_layout.addDrawerListener(toggle)
         toggle.syncState()
     }
-    //todo skrocic te funkcje
+
     private fun setupSocket(){
-        val onNewChannel = Emitter.Listener {args ->                                            //przyjmuje z API array elementow typu ANY wiec musimy cast as String
+        socket.connect()
+        socket.on("channelCreated", onNewChannelListener())
+        socket.on("messageCreated", onNewMessageListener())
+    }
+
+    private fun onNewChannelListener() : Emitter.Listener {
+        return Emitter.Listener { args ->                                            //przyjmuje z API array elementow typu ANY wiec musimy cast as String
             if (App.prefs.isLoggedIn) {
                 runOnUiThread {                                                                         //Emmiter Listener dziala na worker Thread zeby nie blokowac calego UI naszej aplikacji wiec tutaj kazemy mu przejsc na glowny thread po tym jak juz pobierze wyniki (args), zeby nasze UI zostalo zauktualizowane
                     val channelName = args[0] as String
-                    val channelDesctription = args[1] as String
+                    val channelDescription = args[1] as String
                     val channelId = args[2] as String
 
-                    val newChannel = Channel(channelName, channelDesctription, channelId)               //we create new Channel object were we store data about it
+                    val newChannel = Channel(channelName, channelDescription, channelId)               //we create new Channel object were we store data about it
                     MessageService.channels.add(newChannel)                                             //adding new channel to list of all channels
                     channelAdapter.notifyDataSetChanged()                                               //after creation of new channel and receiving it from API it also refreshes list automatically now
                 }
             }
         }
+    }
 
-        val onNewMessage = Emitter.Listener { args ->
+    private fun onNewMessageListener() : Emitter.Listener {
+        return Emitter.Listener { args ->
             if (App.prefs.isLoggedIn) {
                 runOnUiThread {
                     val channelId = args[2] as String
@@ -106,20 +100,17 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-        socket.connect()
-        socket.on("channelCreated", onNewChannel)
-        socket.on("messageCreated", onNewMessage)
     }
 
-    private fun setupAdapters (){
-        channelAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_1,
-            MessageService.channels)
-        channel_list.adapter = channelAdapter
+    private fun getUserIfLoggedIn(){
+        if (App.prefs.isLoggedIn){
+            AuthService.findUserByEmail(this){}
+        }
+    }
 
-        messageAdapter = MessageAdapter(this, MessageService.messages)
-        messageListView.adapter = messageAdapter
-        val layoutManager = LinearLayoutManager(this)
-        messageListView.layoutManager = layoutManager
+    private fun setupUserDataReceiver() {
+        LocalBroadcastManager.getInstance(this).registerReceiver(userDataChangeReceiver,
+            IntentFilter(BROADCAST_USER_DATA_CHANGE))
     }
 
     private val userDataChangeReceiver = object : BroadcastReceiver() {
@@ -146,7 +137,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     @SuppressLint("SetTextI18n")
-    fun updateWithChannel() {
+    private fun updateWithChannel() {
         mainChannelName.text = "#${selectedChannel?.name}"
         if (selectedChannel != null) {
             MessageService.getMessages(selectedChannel!!.id){ complete ->                           //download messages for channel
@@ -160,10 +151,30 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    override fun onDestroy() {
-        socket.disconnect()
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(userDataChangeReceiver)
-        super.onDestroy()
+    private fun setupAdapters (){
+        setupChannelAdapter()
+        setupMessageAdapter()
+    }
+
+    private fun setupChannelAdapter(){
+        channelAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_1,
+            MessageService.channels)
+        channel_list.adapter = channelAdapter
+    }
+
+    private fun setupMessageAdapter(){
+        messageAdapter = MessageAdapter(this, MessageService.messages)
+        messageListView.adapter = messageAdapter
+        val layoutManager = LinearLayoutManager(this)
+        messageListView.layoutManager = layoutManager
+    }
+
+    private fun setupOnClickListeners(){
+        channel_list.setOnItemClickListener { _, _, position, _ ->
+            selectedChannel = MessageService.channels[position]
+            drawer_layout.closeDrawer(GravityCompat.START)
+            updateWithChannel()
+        }
     }
 
     fun loginBtnNavHeaderClicked(view: View){
@@ -223,5 +234,11 @@ class MainActivity : AppCompatActivity() {
         if (inputManager.isAcceptingText){
             inputManager.hideSoftInputFromWindow(currentFocus?.windowToken, 0)                //podajemy token okna, ktore jest w danym momencie aktywne, czyli otwartej klawiatury
         }
+    }
+
+    override fun onDestroy() {
+        socket.disconnect()
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(userDataChangeReceiver)
+        super.onDestroy()
     }
 }
