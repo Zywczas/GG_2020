@@ -22,9 +22,8 @@ object MessageService {
                 for (x in 0 until response.length()){
                     val channel = response.getJSONObject(x)                                         //we pull JSON Objects from array 1 by 1
                     val channelName = channel.getString("name")                              //we pull info about each parameter of channel from server
-                    val channelDesc = channel.getString("description")
                     val channelId = channel.getString("_id")
-                    val newChannel = Channel(channelName, channelDesc, channelId)                   //in our app we create new Channel object with pulled info
+                    val newChannel = Channel(channelName, channelId)                   //in our app we create new Channel object with pulled info
                     this.channels.add(newChannel)                                                   //and add it to our list of channels
                 }
                 complete(true)

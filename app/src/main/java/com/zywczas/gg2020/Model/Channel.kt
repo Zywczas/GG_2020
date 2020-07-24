@@ -1,6 +1,6 @@
 package com.zywczas.gg2020.Model
 
-class Channel (val name: String, val description: String, val id: String) {                         //bedzie przyjmowac wartosci kanalu od API
+class Channel (val name: String, val id: String) {
     override fun toString(): String {
         return "#$name"
     }
