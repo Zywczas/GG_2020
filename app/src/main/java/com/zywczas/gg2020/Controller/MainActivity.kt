@@ -107,7 +107,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
         socket.connect()
-        socket.on("channelCreated", onNewChannel)                                             //odbiera dane z API caly czas , jezeli Event wykryty to Emmitter Listener odbiera informacje
+        socket.on("channelCreated", onNewChannel)
         socket.on("messageCreated", onNewMessage)
     }
 
