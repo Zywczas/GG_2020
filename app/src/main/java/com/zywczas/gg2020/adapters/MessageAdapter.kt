@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.zywczas.gg2020.model.Message
+import com.zywczas.gg2020.models.Message
 import com.zywczas.gg2020.R
 import com.zywczas.gg2020.services.UserDataService
 import java.text.ParseException

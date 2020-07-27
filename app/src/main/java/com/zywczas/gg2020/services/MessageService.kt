@@ -4,8 +4,8 @@ import android.util.Log
 import com.android.volley.Response
 import com.android.volley.toolbox.JsonArrayRequest
 import com.zywczas.gg2020.controller.App
-import com.zywczas.gg2020.model.Channel
-import com.zywczas.gg2020.model.Message
+import com.zywczas.gg2020.models.Channel
+import com.zywczas.gg2020.models.Message
 import com.zywczas.gg2020.utilities.URL_GET_CHANNELS
 import com.zywczas.gg2020.utilities.URL_GET_MESSAGES
 import org.json.JSONException

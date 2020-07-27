@@ -18,8 +18,8 @@ import androidx.core.view.GravityCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.zywczas.gg2020.adapters.MessageAdapter
-import com.zywczas.gg2020.model.Channel
-import com.zywczas.gg2020.model.Message
+import com.zywczas.gg2020.models.Channel
+import com.zywczas.gg2020.models.Message
 import com.zywczas.gg2020.R
 import com.zywczas.gg2020.services.AuthService
 import com.zywczas.gg2020.services.MessageService
