@@ -17,39 +17,47 @@ import java.util.*
 
 class CreateUserActivity : AppCompatActivity() {
 
-    private var userAvatar = "profileDefault"                                                               //zmienna trzymajaca info o wybranym losowo obrazku, ale jak ktos nie chce wybrac to domyslny obrazek bedzie obrazkiem o nazwie profileDefault z naszej bazy obrazkow
-    private var avatarBackgroundColor = "[0.5, 0.5, 0.5, 1]"                                                //RGB color values, wartosc 1 to alpha, przyszlo to z iOS - normalnie RGB ma wartosci od 0 do 255 ale to jest przekonrwertowane na 0-1
+    private var userAvatarName = "profileDefault"
+    //RGB color values from 0 to 1 adopted from API adjusted to iOS
+    private var avatarBackgroundColor = "[0.5, 0.5, 0.5, 1]"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_user)
-        createSpinner.visibility = View.INVISIBLE                                                   //ustawia widocznosc danego View
         setupOnClickListeners()
     }
 
     private fun setupOnClickListeners() {
         showHideBtn.setOnClickListener{
             if (showHideBtn.text.toString() == "Show"){
-                createPasswordText.transformationMethod = HideReturnsTransformationMethod.getInstance()
-                showHideBtn.text = getString(R.string.hide)
+                showPasswordInput()
             } else{
-                createPasswordText.transformationMethod = PasswordTransformationMethod.getInstance()
-                showHideBtn.text = getString(R.string.show)
+                hidePasswordInput()
             }
         }
     }
 
-    fun createUserAvatar (view: View) {
+    private fun showPasswordInput(){
+        createPasswordText.transformationMethod = HideReturnsTransformationMethod.getInstance()
+        showHideBtn.text = getString(R.string.hide)
+    }
+
+    private fun hidePasswordInput(){
+        createPasswordText.transformationMethod = PasswordTransformationMethod.getInstance()
+        showHideBtn.text = getString(R.string.show)
+    }
+
+    fun createAvatarImageClicked (view: View) {
         val random = Random()
         val color = random.nextInt(2)                                                   //creates random number between 0-2 but 2 is excluded, so it can be or 0 or 1
         val avatar = random.nextInt(28)                                                 //because we have 27 images to choose from
-        userAvatar =
+        userAvatarName =
             if (color == 0){
                 "light$avatar"
             } else {
                 "dark$avatar"
             }
-        val resourceId = resources.getIdentifier(userAvatar, "drawable", packageName)
+        val resourceId = resources.getIdentifier(userAvatarName, "drawable", packageName)
         createAvatarImageView.setImageResource(resourceId)
     }
 
@@ -70,43 +78,12 @@ class CreateUserActivity : AppCompatActivity() {
         val userName = createUserNameText.text.toString()
         val userEmail = createEmailText.text.toString()                                      //musi byc toString bo inaczej daloby characters (CharSequence)
         val userPassword = createPasswordText.text.toString()
-
         if (userName.isEmpty() || userEmail.isEmpty() || userPassword.isEmpty()) {
             Toast.makeText(this,"Make sure username, email and password are filled in.",Toast.LENGTH_LONG).show()
             enableSpinner(false)
-            return
+        } else {
+            createNewUser(userName, userEmail, userPassword)
         }
-        //todo ogarnac to
-            AuthService.registerUser(userEmail, userPassword){registerSuccess ->          //definicja funkcji bierze lambde stad i daje przypisuje jej paramert Boolean a pozniej ja wykonuje
-                if (registerSuccess){
-                    AuthService.loginUser(userEmail, userPassword){loginSuccess ->
-                        if (loginSuccess){
-                            AuthService.createUser(userName, userEmail, userAvatar, avatarBackgroundColor){createUserSuccess ->
-                                if (createUserSuccess){
-                                    enableSpinner(false)
-                                    val userDataChange = Intent(BROADCAST_USER_DATA_CHANGE)
-                                    LocalBroadcastManager.getInstance(this).sendBroadcast(userDataChange) //wysylamy tylko info, nie wartosci
-                                    finish()                                                            //wylacza ta activity i wraca do poprzedniej
-                                } else {
-                                    errorToast()
-                                    enableSpinner(false)
-                                }
-                            }
-                        } else {
-                            errorToast()
-                            enableSpinner(false)
-                        }
-                    }
-                } else {
-                    errorToast()
-                    enableSpinner(false)
-                }
-            }
-    }
-//todo wrzucic toasty stad do 1 funkcji
-    private fun errorToast(){
-        Toast.makeText(this, "Something went wrong. Please change email and try again.", Toast.LENGTH_LONG).show()
-        enableSpinner(false)
     }
 
     private fun enableSpinner (enable: Boolean){                                                            //jezeli klikniemy guzik Create User to inne guziki sa wylaczone zeby,
@@ -119,4 +96,35 @@ class CreateUserActivity : AppCompatActivity() {
         createAvatarImageView.isEnabled = !enable
         backgroundColorBtn.isEnabled = !enable
     }
+
+    private fun showError(){
+        Toast.makeText(this, "Something went wrong. Please change email and try again.", Toast.LENGTH_LONG).show()
+        enableSpinner(false)
+    }
+
+    private fun createNewUser(name: String, email: String, password: String){
+        AuthService.registerUser(email, password){registerSuccess ->          //definicja funkcji bierze lambde stad i daje przypisuje jej paramert Boolean a pozniej ja wykonuje
+            if (registerSuccess){
+                AuthService.loginUser(email, password){loginSuccess ->
+                    if (loginSuccess){
+                        AuthService.createUser(name, email, userAvatarName, avatarBackgroundColor){ createUserSuccess ->
+                            if (createUserSuccess){
+                                enableSpinner(false)
+                                val userDataChange = Intent(BROADCAST_USER_DATA_CHANGE)
+                                LocalBroadcastManager.getInstance(this).sendBroadcast(userDataChange) //wysylamy tylko info, nie wartosci
+                                finish()                                                            //wylacza ta activity i wraca do poprzedniej
+                            } else {
+                                showError()
+                            }
+                        }
+                    } else {
+                        showError()
+                    }
+                }
+            } else {
+                showError()
+            }
+        }
+    }
+
 }

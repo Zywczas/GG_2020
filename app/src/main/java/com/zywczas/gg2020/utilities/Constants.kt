@@ -1,5 +1,4 @@
 package com.zywczas.gg2020.utilities
-//todo zmienic nazwy pakietow na male litery
 
 const val BASE_URL = "https://gg2020.herokuapp.com/v1/"
 const val SOCKET_URL = "https://gg2020.herokuapp.com/"

@@ -15,12 +15,10 @@ import org.json.JSONObject
 object AuthService {
 
     fun registerUser (email: String, password: String, complete: (Boolean) -> Unit) {               //nasza funkcja tworzaca nowego uzytkownika potrzebuje email i password, ale Volley potrzebuje jeszcze Context, a complete dajemy zeby wiedziec co robic w dwoch przypadkach true i false
-
         val jsonBody = JSONObject()                                                                 //API na serwerze przyjmuje tylko JSON objects
         jsonBody.put("email", email)                                                         //do JSON body dodajemy key i value
         jsonBody.put("password", password)
         val requestBody = jsonBody.toString()                                                //web request musi to podac jako byte array, wiec teraz zamieniamy na string a pozniej na byte array
-
         val registerRequest = object : StringRequest(Method.POST, URL_REGISTER, Response.Listener{ response ->   //StringRequest - klasa z pakietu Volley, object = anonymou inner class
             complete(true)
         }, Response.ErrorListener {error ->
@@ -38,14 +36,11 @@ object AuthService {
         App.prefs.requestQueue.add(registerRequest)                                        //web request stworzony wiec teraz dodajemy go do kolejki
     }
 
-
     fun loginUser (email: String, password: String, complete: (Boolean) -> Unit){
-
         val jsonBody = JSONObject()
         jsonBody.put("email", email)
         jsonBody.put("password", password)
         val requestBody = jsonBody.toString()
-
         val loginRequest = object : JsonObjectRequest(Method.POST, URL_LOGIN, null, Response.Listener {response ->
             try {
                 App.prefs.userEmail = response.getString("user")
@@ -56,7 +51,6 @@ object AuthService {
                 Log.d("JSON", "EXC: ${e.localizedMessage}")
                 complete(false)
             }
-
         }, Response.ErrorListener { error ->
             Log.d("ERROR", "cannot log in user: $error")
             complete(false)
@@ -69,12 +63,10 @@ object AuthService {
                 return requestBody.toByteArray()
             }
         }
-
         App.prefs.requestQueue.add(loginRequest)
     }
 
     fun createUser (name: String, email: String, avatarName: String, avatarColor: String, complete: (Boolean) -> Unit){
-
         val jsonBody = JSONObject()
         //order must be the same as in API
         jsonBody.put("name", name)
@@ -82,9 +74,7 @@ object AuthService {
         jsonBody.put("avatarName", avatarName)
         jsonBody.put("avatarColor", avatarColor)
         val requestBody = jsonBody.toString()
-
         val createUserRequest = object : JsonObjectRequest (Method.POST, URL_CREATE_USER, null, Response.Listener { response ->
-
             try {
                 UserDataService.name = response.getString("name")
                 UserDataService.email = response.getString("email")
@@ -92,12 +82,10 @@ object AuthService {
                 UserDataService.avatarName = response.getString("avatarName")
                 UserDataService.id = response.getString("_id")
                 complete(true)
-
             } catch (e: JSONException){
                 Log.d("JSON", "EXC: ${e.localizedMessage}")
                 complete(false)
             }
-
         }, Response.ErrorListener { error ->
             Log.d("ERROR", "cannot add user: $error")
             complete(false)
