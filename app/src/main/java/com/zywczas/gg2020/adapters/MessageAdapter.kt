@@ -37,8 +37,8 @@ class MessageAdapter (private val context: Context, private val messages: ArrayL
     fun returnDateString(isoString: String) : String {
         // 2017-09-11T01:16:18.858Z - this is what API gives
         // Monday 4:35 PM - this is what we want
-        val isoFormatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())   //format to parse String into date
-        isoFormatter.timeZone = TimeZone.getTimeZone("UTC")                                            //UTC - Coordinated Universal Time (Standard)
+        val isoFormatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
+        isoFormatter.timeZone = TimeZone.getTimeZone("UTC")
         var convertedDate = Date()
         try {
             convertedDate = isoFormatter.parse(isoString)

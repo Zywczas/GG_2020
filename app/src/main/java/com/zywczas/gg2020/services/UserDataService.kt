@@ -26,16 +26,15 @@ object UserDataService {
     }
 
     fun returnAvatarColor(components: String) : Int {
-        //[0.8117647058823529, 0.5176470588235295, 0.7372549019607844, 1] - trzeba to rozebra na same liczby:
+        //[0.8117647058823529, 0.5176470588235295, 0.7372549019607844, 1] - function argument
+        //we need to remove special marks to leave only Double values with white space between them
         val strippedColor = components.replace("[", "")
                                                 .replace("]", "")
                                                 .replace(",", "")
-
         var r = 0
         var g = 0
         var b = 0
-
-        val scanner = Scanner(strippedColor)                                                        //super klasa, ktora wyszukuje dany typ w zbiorze danych, np w String, ale nie moga byc inne znaki pomiedzy, tylko spacje sa akceptowalne
+        val scanner = Scanner(strippedColor)
         if (scanner.useLocale(Locale.US).hasNextDouble()){
             r = (scanner.nextDouble() * 255).toInt()
             g = (scanner.nextDouble() * 255).toInt()

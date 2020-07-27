@@ -49,8 +49,8 @@ class CreateUserActivity : AppCompatActivity() {
 
     fun createAvatarImageClicked (view: View) {
         val random = Random()
-        val color = random.nextInt(2)                                                   //creates random number between 0-2 but 2 is excluded, so it can be or 0 or 1
-        val avatar = random.nextInt(28)                                                 //because we have 27 images to choose from
+        val color = random.nextInt(2)
+        val avatar = random.nextInt(28)
         userAvatarName =
             if (color == 0){
                 "light$avatar"
@@ -67,16 +67,16 @@ class CreateUserActivity : AppCompatActivity() {
         val g = random.nextInt(255)
         val b = random.nextInt(255)
         createAvatarImageView.setBackgroundColor(Color.rgb(r,g,b))
-        val savedR = r.toDouble() / 255                                                     //konwertujemy wartosc 0-255 na wartosc 0-1, w takim formacie color bedzie
-        val savedG = g.toDouble() /255                                                      //przekazany pozniej do zdjecia profilowego
+        val savedR = r.toDouble() / 255
+        val savedG = g.toDouble() /255
         val savedB = b.toDouble() / 255
         avatarBackgroundColor = "[$savedR, $savedG, $savedB, 1]"
     }
 
     fun createUserClicked (view: View) {
-        enableSpinner(true)                                                                  //funkcja zdefiniowana ponizej
+        enableSpinner(true)
         val userName = createUserNameText.text.toString()
-        val userEmail = createEmailText.text.toString()                                      //musi byc toString bo inaczej daloby characters (CharSequence)
+        val userEmail = createEmailText.text.toString()
         val userPassword = createPasswordText.text.toString()
         if (userName.isEmpty() || userEmail.isEmpty() || userPassword.isEmpty()) {
             Toast.makeText(this,"Make sure username, email and password are filled in.",Toast.LENGTH_LONG).show()
@@ -86,8 +86,8 @@ class CreateUserActivity : AppCompatActivity() {
         }
     }
 
-    private fun enableSpinner (enable: Boolean){                                                            //jezeli klikniemy guzik Create User to inne guziki sa wylaczone zeby,
-        if (enable){                                                                                //uzytkownik nie klikal ciagle, oraz wlacza prgress bar
+    private fun enableSpinner (enable: Boolean){
+        if (enable){
             createSpinner.visibility = View.VISIBLE
         } else {
             createSpinner.visibility = View.INVISIBLE
@@ -103,7 +103,7 @@ class CreateUserActivity : AppCompatActivity() {
     }
 
     private fun createNewUser(name: String, email: String, password: String){
-        AuthService.registerUser(email, password){registerSuccess ->          //definicja funkcji bierze lambde stad i daje przypisuje jej paramert Boolean a pozniej ja wykonuje
+        AuthService.registerUser(email, password){registerSuccess ->
             if (registerSuccess){
                 AuthService.loginUser(email, password){loginSuccess ->
                     if (loginSuccess){
@@ -111,8 +111,8 @@ class CreateUserActivity : AppCompatActivity() {
                             if (createUserSuccess){
                                 enableSpinner(false)
                                 val userDataChange = Intent(BROADCAST_USER_DATA_CHANGE)
-                                LocalBroadcastManager.getInstance(this).sendBroadcast(userDataChange) //wysylamy tylko info, nie wartosci
-                                finish()                                                            //wylacza ta activity i wraca do poprzedniej
+                                LocalBroadcastManager.getInstance(this).sendBroadcast(userDataChange)
+                                finish()
                             } else {
                                 showError()
                             }

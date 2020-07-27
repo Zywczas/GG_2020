@@ -64,10 +64,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun onNewChannelListener() : Emitter.Listener {
-        return Emitter.Listener { details ->                                            //przyjmuje z API array elementow typu ANY wiec musimy cast as String
+        return Emitter.Listener { details ->
             if (App.prefs.isLoggedIn) {
-                runOnUiThread {                                                                         //Emmiter Listener dziala na worker Thread zeby nie blokowac calego UI naszej aplikacji wiec tutaj kazemy mu przejsc na glowny thread po tym jak juz pobierze wyniki (args), zeby nasze UI zostalo zauktualizowane
-                    receiveChannel(details)                                               //after creation of new channel and receiving it from API it also refreshes list automatically now
+                runOnUiThread {
+                    receiveChannel(details)
                 }
             }
         }
@@ -76,8 +76,8 @@ class MainActivity : AppCompatActivity() {
     private fun receiveChannel(details: Array<Any>){
         val channelName = details[0] as String
         val channelId = details[2] as String
-        val newChannel = Channel(channelName, channelId)               //we create new Channel object were we store data about it
-        MessageService.channels.add(newChannel)                                             //adding new channel to list of all channels
+        val newChannel = Channel(channelName, channelId)
+        MessageService.channels.add(newChannel)
         channelAdapter.notifyDataSetChanged()
     }
 
@@ -94,13 +94,13 @@ class MainActivity : AppCompatActivity() {
     private fun receiveMessage(details: Array<Any>){
         val channelId = details[2] as String
         if (channelId == selectedChannel?.id) {
-            val msgBody = details[0] as String                                              //args[1] is userId which we don't need
+            val msgBody = details[0] as String
             val userName = details[3] as String
             val userAvatar = details[4] as String
             val userAvatarColor = details[5] as String
             val id = details[6] as String
             val timeStamp = details[7] as String
-            val newMessage = Message(msgBody, userName, userAvatar, userAvatarColor, //receiving new message from API, creating object Message and storing it in an ArrayList<Message>
+            val newMessage = Message(msgBody, userName, userAvatar, userAvatarColor,
                 id, timeStamp)
             MessageService.messages.add(newMessage)
             messageAdapter.notifyDataSetChanged()
@@ -142,7 +142,7 @@ class MainActivity : AppCompatActivity() {
             if (complete) {
                 if (MessageService.channels.count() > 0) {
                     selectedChannel = MessageService.channels[0]
-                    channelAdapter.notifyDataSetChanged()                                   //onCrate we have empty array of channels, but this fun tells our adapter about new data in onCreate method
+                    channelAdapter.notifyDataSetChanged()
                     updateWithChannel()
                 }
             }
@@ -158,14 +158,18 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupMessages(){
-        MessageService.getMessages(selectedChannel!!.id){ complete ->                           //download messages for channel
+        MessageService.getMessages(selectedChannel!!.id){ complete ->
             if (complete){
-                messageAdapter.notifyDataSetChanged()                                           //print messages here
+                messageAdapter.notifyDataSetChanged()
                 if (messageAdapter.itemCount > 0){
-                    messageListView.smoothScrollToPosition(messageAdapter.itemCount - 1) //auto scrolling to last message
+                    scrollToLastMessage()
                 }
             }
         }
+    }
+
+    private fun scrollToLastMessage(){
+        messageListView.smoothScrollToPosition(messageAdapter.itemCount - 1)
     }
 
     private fun setupAdapters (){
@@ -231,11 +235,11 @@ class MainActivity : AppCompatActivity() {
 
         builder.setView(dialogView)
             .setPositiveButton("Add"){ _, _ ->
-                val nameTextField = dialogView.findViewById<EditText>(R.id.addChannelNameText) //nie mozna odwolac sie bezposrednio do pol tekstowych w DialogView wiec trzeba je wyszukac po ID
+                val nameTextField = dialogView.findViewById<EditText>(R.id.addChannelNameText)
                 val descTextField = dialogView.findViewById<EditText>(R.id.addChannelDescText)
                 val channelName = nameTextField.text.toString()
                 val channelDesc = descTextField.text.toString()
-                socket.emit("newChannel", channelName, channelDesc)                       //kolejnosc wysylania parametrow jak w API - Event i dane
+                socket.emit("newChannel", channelName, channelDesc)
             }
             .setNegativeButton("Cancel"){ _, _ ->
             }
@@ -251,16 +255,16 @@ class MainActivity : AppCompatActivity() {
 
     private fun hideKeyboard(){
         val inputManager =
-            getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager                    //bierzemy dostep do serwisu o nazwie INPUT..., czyli do klawiatury telefonu i odbieramy to jako klase InputMethodManager
+            getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         if (inputManager.isAcceptingText){
-            inputManager.hideSoftInputFromWindow(currentFocus?.windowToken, 0)                //podajemy token okna, ktore jest w danym momencie aktywne, czyli otwartej klawiatury
+            inputManager.hideSoftInputFromWindow(currentFocus?.windowToken, 0)
         }
     }
 
     private fun sendMessage(){
         val userId = UserDataService.id
         val channelId = selectedChannel!!.id
-        socket.emit("newMessage", messageTextField.text.toString(), userId, channelId,    //sending message with other details to API, order is important to API!!
+        socket.emit("newMessage", messageTextField.text.toString(), userId, channelId,
             UserDataService.name, UserDataService.avatarName, UserDataService.avatarColor)
         messageTextField.text.clear()
     }

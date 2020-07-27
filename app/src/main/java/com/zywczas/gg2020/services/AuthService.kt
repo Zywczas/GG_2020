@@ -14,26 +14,26 @@ import org.json.JSONObject
 
 object AuthService {
 
-    fun registerUser (email: String, password: String, complete: (Boolean) -> Unit) {               //nasza funkcja tworzaca nowego uzytkownika potrzebuje email i password, ale Volley potrzebuje jeszcze Context, a complete dajemy zeby wiedziec co robic w dwoch przypadkach true i false
-        val jsonBody = JSONObject()                                                                 //API na serwerze przyjmuje tylko JSON objects
-        jsonBody.put("email", email)                                                         //do JSON body dodajemy key i value
+    fun registerUser (email: String, password: String, complete: (Boolean) -> Unit) {
+        val jsonBody = JSONObject()
+        jsonBody.put("email", email)
         jsonBody.put("password", password)
-        val requestBody = jsonBody.toString()                                                //web request musi to podac jako byte array, wiec teraz zamieniamy na string a pozniej na byte array
-        val registerRequest = object : StringRequest(Method.POST, URL_REGISTER, Response.Listener{ response ->   //StringRequest - klasa z pakietu Volley, object = anonymou inner class
+        val requestBody = jsonBody.toString()
+        val registerRequest = object : StringRequest(Method.POST, URL_REGISTER, Response.Listener{ response ->
             complete(true)
         }, Response.ErrorListener {error ->
             Log.d("ERROR", "cannot register user: $error")
             complete(false)
-        }) {                                                                                        //now we specify body content type
-            override fun getBodyContentType(): String {                                             //2 metody wymagane przez API, pobrane z JSONRequest
-                return "application/json; charset=utf-8"                                            //podajemy body content type
+        }) {
+            override fun getBodyContentType(): String {
+                return "application/json; charset=utf-8"
             }
 
-            override fun getBody(): ByteArray {                                                     //podajemy body content
+            override fun getBody(): ByteArray {
                 return requestBody.toByteArray()
             }
         }
-        App.prefs.requestQueue.add(registerRequest)                                        //web request stworzony wiec teraz dodajemy go do kolejki
+        App.prefs.requestQueue.add(registerRequest)
     }
 
     fun loginUser (email: String, password: String, complete: (Boolean) -> Unit){
@@ -116,7 +116,6 @@ object AuthService {
                 UserDataService.avatarColor = response.getString("avatarColor")
                 UserDataService.avatarName = response.getString("avatarName")
                 UserDataService.id = response.getString("_id")
-
                 val userDataChange = Intent(BROADCAST_USER_DATA_CHANGE)
                 LocalBroadcastManager.getInstance(context).sendBroadcast(userDataChange)
                 complete(true)
@@ -124,7 +123,6 @@ object AuthService {
                 Log.d("JSON", "EXC: ${e.localizedMessage}")
                 complete(false)
             }
-
         }, Response.ErrorListener { error ->
             Log.d("ERROR", "cannot find user: $error")
             complete(false)
@@ -141,8 +139,6 @@ object AuthService {
         }
         App.prefs.requestQueue.add(findUserRequest)
     }
-
-
 
 
 }

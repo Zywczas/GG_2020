@@ -87,8 +87,8 @@ class LoginActivity : AppCompatActivity() {
         finish()
     }
 
-    private fun enableSpinner (enabled: Boolean){                                                            //jezeli klikniemy guzik Create User to inne guziki sa wylaczone zeby,
-        if (enabled){                                                                                //uzytkownik nie klikal ciagle, oraz wlacza progress bar
+    private fun enableSpinner (enabled: Boolean){
+        if (enabled){
             loginSpinner.visibility = View.VISIBLE
         } else {
             loginSpinner.visibility = View.INVISIBLE
@@ -98,9 +98,9 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun hideKeyboard(){
-        val inputManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager  //bierzemy dostep do serwisu o nazwie INPUT..., czyli do klawiatury telefonu i odbieramy to jako klase InputMethodManager
+        val inputManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         if (inputManager.isAcceptingText){
-            inputManager.hideSoftInputFromWindow(currentFocus?.windowToken, 0)                //podajemy token okna, ktore jest w danym momencie aktywne, czyli otwartej klawiatury
+            inputManager.hideSoftInputFromWindow(currentFocus?.windowToken, 0)
         }
     }
 }

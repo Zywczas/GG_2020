@@ -14,15 +14,15 @@ object MessageService {
     val channels = ArrayList<Channel>()
     val messages = ArrayList<Message>()
 
-    fun getChannels (complete: (Boolean) -> Unit){                                                  //request from API to GET all created channels, returns an array of JSONObject's
+    fun getChannels (complete: (Boolean) -> Unit){
         val channelsRequest = object : JsonArrayRequest (Method.GET, URL_GET_CHANNELS, null, Response.Listener {response ->
             try {
                 for (x in 0 until response.length()){
-                    val channel = response.getJSONObject(x)                                         //we pull JSON Objects from array 1 by 1
-                    val channelName = channel.getString("name")                              //we pull info about each parameter of channel from server
+                    val channel = response.getJSONObject(x)
+                    val channelName = channel.getString("name")
                     val channelId = channel.getString("_id")
-                    val newChannel = Channel(channelName, channelId)                   //in our app we create new Channel object with pulled info
-                    this.channels.add(newChannel)                                                   //and add it to our list of channels
+                    val newChannel = Channel(channelName, channelId)
+                    this.channels.add(newChannel)
                 }
                 complete(true)
 
@@ -34,13 +34,13 @@ object MessageService {
             Log.d("ERROR", "Could not retrieve channels")
             complete(false)
         }){
-            override fun getBodyContentType(): String {                                             //2 metody wymagane przez API, pobrane z JSONRequest
-                return "application/json; charset=utf-8"                                            //podajemy body content type
+            override fun getBodyContentType(): String {
+                return "application/json; charset=utf-8"
             }
 
-            override fun getHeaders(): MutableMap<String, String> {                                 //ta funkcja wysyla header do API w postaci Mapy<Key, Value>
+            override fun getHeaders(): MutableMap<String, String> {
                 val headers = HashMap<String, String>()
-                headers.put("Authorization", "Bearer ${App.prefs.authToken}")                       //nazewnictwo z header'a naszej API
+                headers.put("Authorization", "Bearer ${App.prefs.authToken}")
                 return headers
             }
         }
@@ -50,7 +50,6 @@ object MessageService {
     fun getMessages (channelId: String, complete: (Boolean) -> Unit) {
         clearMessages()
         val url = "$URL_GET_MESSAGES$channelId"
-
         val messagesRequest = object : JsonArrayRequest(Method.GET, url, null, Response.Listener { response ->
             try {
                 for (x in 0 until response.length()){
@@ -73,13 +72,13 @@ object MessageService {
             Log.d("ERROR", "Could not retrieve channels")
             complete(false)
         }) {
-            override fun getBodyContentType(): String {                                             //2 metody wymagane przez API, pobrane z JSONRequest
-                return "application/json; charset=utf-8"                                            //podajemy body content type
+            override fun getBodyContentType(): String {
+                return "application/json; charset=utf-8"
             }
 
-            override fun getHeaders(): MutableMap<String, String> {                                 //ta funkcja wysyla header do API w postaci Mapy<Key, Value>
+            override fun getHeaders(): MutableMap<String, String> {
                 val headers = HashMap<String, String>()
-                headers.put("Authorization", "Bearer ${App.prefs.authToken}")                                   //nazewnictwo z header'a naszej API
+                headers.put("Authorization", "Bearer ${App.prefs.authToken}")
                 return headers
             }
         }
