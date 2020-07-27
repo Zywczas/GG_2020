@@ -1,7 +1,7 @@
-package com.zywczas.gg2020.Controller
+package com.zywczas.gg2020.controller
 
 import android.app.Application
-import com.zywczas.gg2020.Utilities.SharedPrefs
+import com.zywczas.gg2020.utilities.SharedPrefs
 
 class App : Application() {
 

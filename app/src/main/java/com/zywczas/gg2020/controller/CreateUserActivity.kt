@@ -1,4 +1,4 @@
-package com.zywczas.gg2020.Controller
+package com.zywczas.gg2020.controller
 
 import android.content.Intent
 import android.graphics.Color
@@ -10,8 +10,8 @@ import android.view.View
 import android.widget.Toast
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.zywczas.gg2020.R
-import com.zywczas.gg2020.Services.AuthService
-import com.zywczas.gg2020.Utilities.BROADCAST_USER_DATA_CHANGE
+import com.zywczas.gg2020.services.AuthService
+import com.zywczas.gg2020.utilities.BROADCAST_USER_DATA_CHANGE
 import kotlinx.android.synthetic.main.activity_create_user.*
 import java.util.*
 

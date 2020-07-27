@@ -1,7 +1,7 @@
-package com.zywczas.gg2020.Services
+package com.zywczas.gg2020.services
 
 import android.graphics.Color
-import com.zywczas.gg2020.Controller.App
+import com.zywczas.gg2020.controller.App
 import java.util.*
 
 object UserDataService {

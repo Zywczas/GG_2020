@@ -1,4 +1,4 @@
-package com.zywczas.gg2020.Controller
+package com.zywczas.gg2020.controller
 
 import android.content.Context
 import android.content.Intent
@@ -10,7 +10,7 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import com.zywczas.gg2020.R
-import com.zywczas.gg2020.Services.AuthService
+import com.zywczas.gg2020.services.AuthService
 import kotlinx.android.synthetic.main.activity_login.*
 
 class LoginActivity : AppCompatActivity() {

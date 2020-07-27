@@ -1,4 +1,4 @@
-package com.zywczas.gg2020.Adapters
+package com.zywczas.gg2020.adapters
 
 import android.content.Context
 import android.util.Log
@@ -8,9 +8,9 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.zywczas.gg2020.Model.Message
+import com.zywczas.gg2020.model.Message
 import com.zywczas.gg2020.R
-import com.zywczas.gg2020.Services.UserDataService
+import com.zywczas.gg2020.services.UserDataService
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*

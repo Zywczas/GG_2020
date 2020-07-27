@@ -1,4 +1,4 @@
-package com.zywczas.gg2020.Utilities
+package com.zywczas.gg2020.utilities
 
 import android.content.Context
 import android.content.SharedPreferences
