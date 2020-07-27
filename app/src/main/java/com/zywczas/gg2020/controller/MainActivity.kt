@@ -161,15 +161,15 @@ class MainActivity : AppCompatActivity() {
         MessageService.getMessages(selectedChannel!!.id){ complete ->
             if (complete){
                 messageAdapter.notifyDataSetChanged()
-                if (messageAdapter.itemCount > 0){
-                    scrollToLastMessage()
-                }
+                scrollToLastMessage()
             }
         }
     }
 
     private fun scrollToLastMessage(){
-        messageListView.smoothScrollToPosition(messageAdapter.itemCount - 1)
+        if (messageAdapter.itemCount > 0){
+            messageListView.smoothScrollToPosition(messageAdapter.itemCount - 1)
+        }
     }
 
     private fun setupAdapters (){

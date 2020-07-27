@@ -9,6 +9,3 @@ const val URL_GET_USER = "${BASE_URL}user/byEmail/"
 const val URL_GET_CHANNELS = "${BASE_URL}channel/"
 const val URL_GET_MESSAGES = "${BASE_URL}message/byChannel/"
 const val BROADCAST_USER_DATA_CHANGE = "BROADCAST_USER_DATA_CHANGE"
-
-//todo sprawdzic czy potrzebuje wsystkie stringi
-
